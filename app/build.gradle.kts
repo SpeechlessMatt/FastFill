@@ -19,23 +19,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        release {
-            // ① 先看环境变量（CI 用）
-            def storeFileEnv = System.getenv("RELEASE_STORE_FILE")
-            if (storeFileEnv) {
-                storeFile = file(storeFileEnv)
-                storePassword = System.getenv("RELEASE_STORE_PASSWORD")
-                keyAlias      = System.getenv("RELEASE_KEY_ALIAS")
-                keyPassword   = System.getenv("RELEASE_KEY_PASSWORD")
-                return        // 环境变量齐全，直接返回
-            }
-        }
-    }
-
     buildTypes {
         release {
-            signingConfig = signingConfigs.release
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
