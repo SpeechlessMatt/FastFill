@@ -24,6 +24,10 @@ jobs:
           distribution: 'temurin' # 使用 Eclipse Temurin 发行版
           java-version: '17'
 
+      # 新增：设置 Android SDK
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       # 给 gradlew 添加执行权限
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -42,6 +46,7 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }} # 密钥别名
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }} # 密钥库密码
           keyPassword: ${{ secrets.KEY_PASSWORD }} # 密钥密码
+          buildToolsVersion: "34.0.0"  # 使用较新版本
 
       # 5. (可选) 重命名已签名的 APK
       - name: Rename Signed APK
