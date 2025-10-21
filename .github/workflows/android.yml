@@ -24,6 +24,10 @@ jobs:
           distribution: 'temurin' # 使用 Eclipse Temurin 发行版
           java-version: '11'
 
+      # 给 gradlew 添加执行权限
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       # 3. 构建 Release APK (使用 Gradle 包装器)
       - name: Build Release APK
         run: ./gradlew assembleRelease
