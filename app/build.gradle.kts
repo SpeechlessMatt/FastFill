@@ -20,17 +20,22 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file(project.property("RELEASE_STORE_FILE") as String)
-            storePassword = project.property("RELEASE_STORE_PASSWORD") as String
-            keyAlias = project.property("RELEASE_KEY_ALIAS") as String
-            keyPassword = project.property("RELEASE_KEY_PASSWORD") as String
+        release {
+            // ① 先看环境变量（CI 用）
+            def storeFileEnv = System.getenv("RELEASE_STORE_FILE")
+            if (storeFileEnv) {
+                storeFile = file(storeFileEnv)
+                storePassword = System.getenv("RELEASE_STORE_PASSWORD")
+                keyAlias      = System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword   = System.getenv("RELEASE_KEY_PASSWORD")
+                return        // 环境变量齐全，直接返回
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.release
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
