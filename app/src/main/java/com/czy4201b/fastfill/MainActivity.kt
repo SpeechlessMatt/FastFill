@@ -21,9 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -34,7 +31,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.czy4201b.fastfill.javaScripts.impl.TxDocFill
 import com.czy4201b.fastfill.ui.ModernFilledButton
 import com.czy4201b.fastfill.ui.ModernOutlinedButton
-import com.czy4201b.fastfill.ui.ModernSwitch
 import com.czy4201b.fastfill.ui.SnackBar
 import com.czy4201b.fastfill.ui.URLTextField
 import com.czy4201b.fastfill.ui.UserFillTable

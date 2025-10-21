@@ -2,7 +2,6 @@ package com.czy4201b.fastfill.ui
 
 import android.icu.util.Calendar
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,13 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.czy4201b.fastfill.UserFillViewModel
-import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

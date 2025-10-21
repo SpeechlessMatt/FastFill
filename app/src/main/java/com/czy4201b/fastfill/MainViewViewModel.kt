@@ -1,10 +1,7 @@
 package com.czy4201b.fastfill
 
 import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.czy4201b.fastfill.javaScripts.FastFillJS
@@ -16,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.collections.forEach
 
 data class MainViewUiState(
     val url: String = "",

@@ -2,9 +2,7 @@ package com.czy4201b.fastfill.javaScripts.impl
 
 import android.util.Log
 import android.webkit.CookieManager
-import android.webkit.WebView
 import com.czy4201b.fastfill.javaScripts.BaseFastFillJS
-import com.czy4201b.fastfill.javaScripts.FastFillJS
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject

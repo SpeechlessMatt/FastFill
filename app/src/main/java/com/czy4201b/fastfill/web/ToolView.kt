@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.czy4201b.fastfill.javaScripts.FastFillJS
-import java.util.Calendar
 import java.util.Date
 
 @SuppressLint("SetJavaScriptEnabled")
