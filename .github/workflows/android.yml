@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin' # 使用 Eclipse Temurin 发行版
-          java-version: '11'
+          java-version: '17'
 
       # 给 gradlew 添加执行权限
       - name: Make gradlew executable
