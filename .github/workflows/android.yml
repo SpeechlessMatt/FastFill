@@ -1,63 +1,52 @@
-name: Build & Release APK
+name: Build Signed APK
 
 on:
   push:
     tags:
-      - 'v*'          # 只要推送 v 开头的 tag 就触发（v1.0.0、v2.3.4 都行）
+      - 'v*'
+  workflow_dispatch: # 允许手动触发
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # 允许上传 Release 资源
 
     steps:
-      # 1. 拉代码
-      - name: Checkout
+      # 1. 检出代码
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. JDK 17（AGP 8.x 必需）
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      # 2. 设置 Java 环境
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: 17
+          distribution: 'temurin' # 使用 Eclipse Temurin 发行版
+          java-version: '11'
 
-      # 3. 缓存 Gradle，加速二次构建
-      - name: Cache Gradle
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      # 4. 解码签名 keystore（把 base64 后的文件塞在 KEYSTORE 秘密里）
-      - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE }}" | base64 -d > release.keystore
-
-      # 6. 编译 Release APK
+      # 3. 构建 Release APK (使用 Gradle 包装器)
       - name: Build Release APK
-        env:
-            RELEASE_STORE_FILE: ${{ github.workspace }}/release.keystore
-            RELEASE_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-            RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-            RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon --stacktrace
+        run: ./gradlew assembleRelease
 
-      - name: Locate APK
-        run: find app/build -name "*.apk" -type f
-
-      - name: Upload APK to Release
-        uses: softprops/action-gh-release@v1
+      # 4. 为 APK 签名
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
         with:
-          files: app/build/outputs/apk/release/app-release.apk
-          tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          body: "Automated release for ${{ github.ref_name }}."
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          releaseDirectory: app/build/outputs/apk/release # 指向 APK 目录
+          signingKeyBase64: ${{ secrets.KEYSTORE }} # Base64 编码的签名密钥
+          alias: ${{ secrets.KEY_ALIAS }} # 密钥别名
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }} # 密钥库密码
+          keyPassword: ${{ secrets.KEY_PASSWORD }} # 密钥密码
+
+      # 5. (可选) 重命名已签名的 APK
+      - name: Rename Signed APK
+        run: mv "${{ steps.sign_app.outputs.signedReleaseFile }}" "FastFill_Signed_${{ github.ref_name }}.apk"
+
+      # 6. 创建 GitHub Release 并上传 APK
+      - name: Upload APK to Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.apk" # 上传所有 .apk 文件
+          token: ${{ github.token }}
+          generateReleaseNotes: true # 自动生成 Release 说明
