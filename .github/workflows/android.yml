@@ -50,15 +50,16 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon --stacktrace
 
-      # 7. 创建 GitHub Release 并上传 APK（自动解析 tag 名）
-      - name: Create Release & Upload APK
+      - name: Locate APK
+        run: find app/build -name "*.apk" -type f
+
+      - name: Upload APK to Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}   # 就是 vx.x.x
+          files: app/build/outputs/apk/release/app-release.apk
+          tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
-          body: |
-            Automated release for ${{ github.ref_name }}.
-          files: app/release/app-release.apk
+          body: "Automated release for ${{ github.ref_name }}."
           draft: false
           prerelease: false
         env:
