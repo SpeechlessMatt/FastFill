@@ -1,26 +1,65 @@
-name: Android CI
+name: Build & Release APK
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    tags:
+      - 'v*'          # 只要推送 v 开头的 tag 就触发（v1.0.0、v2.3.4 都行）
 
 jobs:
-  build:
-
+  release:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: set up JDK 11
-      uses: actions/setup-java@v4
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
+      # 1. 拉代码
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+      # 2. JDK 17（AGP 8.x 必需）
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      # 3. 缓存 Gradle，加速二次构建
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 4. 解码签名 keystore（把 base64 后的文件塞在 KEYSTORE 秘密里）
+      - name: Decode Keystore
+        run: echo "${{ secrets.KEYSTORE }}" | base64 -d > release.keystore
+
+      # 5. 本地属性注入（gradle 里用 project.property 读取）
+      - name: Write local.properties
+        run: |
+          echo "RELEASE_STORE_FILE=${{ github.workspace }}/release.keystore" >> local.properties
+          echo "RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> local.properties
+          echo "RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}"           >> local.properties
+          echo "RELEASE_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}"     >> local.properties
+
+      # 6. 编译 Release APK
+      - name: Build Release APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      # 7. 创建 GitHub Release 并上传 APK（自动解析 tag 名）
+      - name: Create Release & Upload APK
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}   # 就是 vx.x.x
+          name: ${{ github.ref_name }}
+          body: |
+            Automated release for ${{ github.ref_name }}.
+          files: app/build/outputs/apk/release/app-release.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
