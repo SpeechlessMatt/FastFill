@@ -46,6 +46,8 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }} # 密钥别名
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }} # 密钥库密码
           keyPassword: ${{ secrets.KEY_PASSWORD }} # 密钥密码
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
          
       # 5. (可选) 重命名已签名的 APK
       - name: Rename Signed APK
