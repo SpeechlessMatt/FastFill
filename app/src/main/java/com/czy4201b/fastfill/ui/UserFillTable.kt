@@ -72,7 +72,6 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 fun UserFillTable(
     modifier: Modifier = Modifier,
@@ -129,23 +128,20 @@ fun UserFillTable(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val hazeOptions = if (!uiState.isShowEditView)
-                    Modifier.hazeEffect(
-                        state = hazeState,
-                        style = HazeStyle(
-                            backgroundColor = Color.White.copy(alpha = 0.20f), // 底板透亮
-                            tint = HazeTint(Color.White.copy(alpha = 0.15f)),  // 再刷一层淡淡白雾
-                            blurRadius = 20.dp,                                // 20-30 之间最自然
-                            noiseFactor = 0.05f                                // 细腻磨砂颗粒
-                        )
-                    ) else Modifier
-
                 stickyHeader {
                     Row(
                         modifier = Modifier
                             .height(40.dp)
                             .fillMaxWidth()
-                            .then(hazeOptions)
+                            .hazeEffect(
+                                state = hazeState,
+                                style = HazeStyle(
+                                    backgroundColor = Color.White.copy(alpha = 0.20f), // 底板透亮
+                                    tint = HazeTint(Color.White.copy(alpha = 0.15f)),  // 再刷一层淡淡白雾
+                                    blurRadius = 20.dp,                                // 20-30 之间最自然
+                                    noiseFactor = 0.05f                                // 细腻磨砂颗粒
+                                )
+                            )
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onPress = { },
@@ -216,7 +212,7 @@ fun UserFillTable(
                 }
 
                 // 这里是表格实现
-                items(vm.sortedRows, key = { it.id }) { row ->
+                items(uiState.userFillTable.sortedBy { it.index }, key = { it.id }) { row ->
                     SwipeBox(
                         modifier = Modifier.animateItem(
                             placementSpec = tween(
@@ -355,8 +351,7 @@ fun UserFillTable(
                     ) {
                         LazyColumn(
                             Modifier
-                                .heightIn(max = 90.dp)
-                                .fillMaxWidth(),
+                                .heightIn(max = 90.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             items(otherTables, key = { it.updatedAt }) {
