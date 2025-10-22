@@ -59,3 +59,4 @@ jobs:
           artifacts: "FastFill_Signed_${{ github.ref_name }}.apk"
           token: ${{ github.token }}
           generateReleaseNotes: true
+          allowUpdates: true
