@@ -51,12 +51,11 @@ jobs:
          
       # 5. (可选) 重命名已签名的 APK
       - name: Rename Signed APK
-        run: mv "${{ steps.sign_app.outputs.signedReleaseFile }}" "FastFill_Signed_${{ github.ref_name }}.apk"
+        run: mv "${{ steps.sign_app.outputs.signedReleaseFile }}" "./FastFill_Signed_${{ github.ref_name }}.apk"
 
-      # 6. 创建 GitHub Release 并上传 APK
       - name: Upload APK to Release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.14.0
         with:
-          artifacts: "*.apk" # 上传所有 .apk 文件
+          artifacts: "FastFill_Signed_${{ github.ref_name }}.apk"
           token: ${{ github.token }}
-          generateReleaseNotes: true # 自动生成 Release 说明
+          generateReleaseNotes: true
