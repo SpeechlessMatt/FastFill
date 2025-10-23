@@ -9,6 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -24,6 +26,9 @@ fun SwipeBox(
     val offsetX = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
+    val screenWidthPx = with(LocalDensity.current) {
+        LocalConfiguration.current.screenWidthDp.dp.toPx()
+    }
     val dismissThreshold = with(density) { -80.dp.toPx() }   // 往左滑 80dp 触发删除
 
     Box(
@@ -33,7 +38,7 @@ fun SwipeBox(
                     onDragEnd = {
                         scope.launch {
                             if (offsetX.value <= dismissThreshold) {
-                                offsetX.animateTo(offsetX.value - 600)
+                                offsetX.animateTo(offsetX.value - screenWidthPx)
                                 onDelete()
                             }
                             offsetX.animateTo(0f)   // 弹回
