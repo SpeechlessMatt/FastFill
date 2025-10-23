@@ -213,7 +213,7 @@ class UserFillViewModel(
             state.copy(
                 userFillTable = userFillTable.map { row ->
                     if (row.id == id)
-                        row.copy(key = key?: row.key, value = value?: row.key)
+                        row.copy(key = key?: row.key, value = value?: row.value)
                     else
                         row
                 }
