@@ -54,6 +54,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -173,6 +174,7 @@ fun UserFillTable(
                                     .clip(RoundedCornerShape(4.dp))
                                     .clickable(
                                         onClick = {
+                                            focusManager.clearFocus()
                                             vm.addRow()
                                             coroutineScope.launch {
                                                 listState.animateScrollToItem(vm.userFillMapSize - 1)
@@ -429,6 +431,7 @@ fun UserFillTable(
                                         onClick = {
                                             // 添加新表格的逻辑
                                             vm.addTable()
+                                            focusManager.clearFocus()
                                         }
                                     )
                             ) {
