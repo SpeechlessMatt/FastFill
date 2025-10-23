@@ -83,13 +83,13 @@ fun UserFillTable(
 
     // 理论上不用放在vm里面
     val listState = rememberLazyListState()
-//    val headerAlpha by animateFloatAsState(
-//        targetValue = if (uiState.isShowEditView) 0f else 1f,
-//        animationSpec = tween(
-//            durationMillis = 400,
-//            easing = FastOutSlowInEasing
-//        )
-//    )
+    val headerAlpha by animateFloatAsState(
+        targetValue = if (uiState.isShowEditView) 0f else 1f,
+        animationSpec = tween(
+            durationMillis = 400,
+            easing = FastOutSlowInEasing
+        )
+    )
     val hazeState = rememberHazeState()
     val blurRadius by animateDpAsState(
         targetValue = if (uiState.isShowEditView) 10.dp else 0.dp,
@@ -133,6 +133,7 @@ fun UserFillTable(
                         modifier = Modifier
                             .height(40.dp)
                             .fillMaxWidth()
+                            .alpha(headerAlpha)
                             .hazeEffect(
                                 state = hazeState,
                                 style = HazeStyle(
