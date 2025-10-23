@@ -275,7 +275,8 @@ fun UserFillTable(
             }
 
             AnimatedVisibility(
-                uiState.isShowEditView,
+                modifier = Modifier.align(Alignment.TopCenter),
+                visible = uiState.isShowEditView,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -294,7 +295,7 @@ fun UserFillTable(
                             indication = null,
                             interactionSource = null
                         )
-                        .padding(start = 60.dp, end = 60.dp, top = 60.dp),
+                        .padding(start = 50.dp, end = 50.dp, top = 60.dp),
                 ) {
                     Text(
                         "表格名称",
@@ -353,73 +354,100 @@ fun UserFillTable(
                     AnimatedVisibility(
                         visible = uiState.isShowPicker,
                     ) {
-                        LazyColumn(
-                            Modifier
+                        Column(
+                            // 为了用户快速点删除和添加的体验，让他不会突然退出，
+                            // 虽然我不知道什么用户用这么玩但是也要写的
+                            modifier = Modifier
                                 .padding(8.dp)
-                                .heightIn(max = 90.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            items(otherTables.sortedByDescending { it.updatedAt }, key = { it.tableId }) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        it.name, modifier = Modifier
-                                            .weight(1f)
-                                            .clickable(
-                                                onClick = { vm.selectTable(it.tableId) },
-                                                role = Role.Button
-                                            )
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onTap = { }
                                     )
-                                    Box(
+                                }
+                        ) {
+                            LazyColumn(
+                                Modifier
+                                    .heightIn(max = 90.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                items(
+                                    otherTables.sortedByDescending { it.createdAt },
+                                    key = { it.tableId }
+                                )
+                                {
+                                    Row(
                                         modifier = Modifier
-                                            .padding(8.dp)
-                                            .clip(CircleShape)
-                                            .rotate(rotateDegree)
-                                            .clickable(
-                                                onClick = {
-                                                    vm.deleteTable(it)
-                                                },
-                                                indication = null,
-                                                interactionSource = null
-                                            ),
+                                            .animateItem(
+                                                placementSpec = tween(
+                                                    durationMillis = 600,
+                                                    easing = FastOutSlowInEasing
+                                                ),
+                                                fadeInSpec = tween(
+                                                    durationMillis = 400,
+                                                    easing = FastOutSlowInEasing
+                                                )
+                                            )
+                                            .fillMaxWidth()
+                                            .padding(end = 8.dp)
                                     ) {
-                                        Icon(
-                                            modifier = Modifier.size(20.dp),
-                                            imageVector = Icons.Outlined.Close,
-                                            contentDescription = null,
-                                            tint = Color.Gray
+                                        Text(
+                                            it.name, modifier = Modifier
+                                                .weight(1f)
+                                                .clickable(
+                                                    onClick = { vm.selectTable(it.tableId) },
+                                                    role = Role.Button
+                                                )
                                         )
+                                        Box(
+                                            modifier = Modifier
+                                                .padding(top = 2.dp)
+                                                .clip(CircleShape)
+                                                .rotate(rotateDegree)
+                                                .clickable(
+                                                    onClick = {
+                                                        vm.deleteTable(it)
+                                                    },
+                                                ),
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier
+                                                    .size(20.dp),
+                                                imageVector = Icons.Outlined.Close,
+                                                contentDescription = null,
+                                                tint = Color.Gray
+                                            )
+                                        }
                                     }
-
                                 }
                             }
-
-                            // 在最后添加一行
-                            item {
-                                Row(
-                                    modifier = Modifier
-                                        .clickable {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable(
+                                        interactionSource = null,
+                                        indication = null,
+                                        onClick = {
                                             // 添加新表格的逻辑
                                             vm.addTable()
                                         }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "添加新表格",
-                                        tint = Color.Gray
                                     )
-                                    Text(
-                                        "添加新表格",
-                                        color = Color.Gray,
-                                        modifier = Modifier.padding(start = 4.dp)
-                                    )
-                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "添加新表格",
+                                    tint = Color.Gray
+                                )
+                                Text(
+                                    "添加新表格",
+                                    color = Color.Gray,
+                                    modifier = Modifier.padding(start = 4.dp)
+                                )
                             }
                         }
+
                     }
 
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(12.dp))
 
                     Button(
                         modifier = Modifier

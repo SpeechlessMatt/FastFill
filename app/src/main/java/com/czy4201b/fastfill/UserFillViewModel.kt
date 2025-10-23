@@ -3,8 +3,6 @@ package com.czy4201b.fastfill
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +10,6 @@ import com.czy4201b.fastfill.room.AppDb
 import com.czy4201b.fastfill.room.TableDao
 import com.czy4201b.fastfill.room.TableMeta
 import com.czy4201b.fastfill.room.TableRow
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -52,7 +49,6 @@ class UserFillViewModel(
     private val tableMutex = Mutex()
 
     /* ---------- 全部表格 ---------- */
-    // 等待改动
     val allTables: StateFlow<List<TableMeta>> =
         dao.observeAllMeta()
             .stateIn(
@@ -83,7 +79,8 @@ class UserFillViewModel(
     private val _state = MutableStateFlow(UserFillViewUiState())
     val state: StateFlow<UserFillViewUiState> = _state.asStateFlow()
 
-    private var _nextIndex by mutableIntStateOf(0)
+    private var _nextRowIndex by mutableIntStateOf(0)
+    private var _nextTableIndex = 1
 
     init {
         Log.d("Database", "init Database")
@@ -100,7 +97,7 @@ class UserFillViewModel(
     }
 
     private suspend fun createDefaultTableAndLoad(): TableMeta = tableMutex.withLock {
-        val defaultMeta = TableMeta(name = "新建表格")
+        val defaultMeta = TableMeta(name = "新建表格${_nextTableIndex++}")
         dao.insertMeta(defaultMeta)          // 插入新表格
         Log.d("Database", "createDefaultTable and Load")
         loadTableData(defaultMeta.tableId)   // 立即加载
@@ -138,7 +135,7 @@ class UserFillViewModel(
 
                 // 加载表格行数据到 userFillTable
                 val rows = dao.observeRows(tableId).first()  // 使用.first()来获取当前时刻的数据。
-                _nextIndex = rows.maxByOrNull { it.index }?.index?: 0
+                _nextRowIndex = rows.maxByOrNull { it.index }?.index?: 0
 
                 _state.update { state ->
                     state.copy(
@@ -198,7 +195,7 @@ class UserFillViewModel(
         _state.update { state ->
             val userFillTable = state.userFillTable
             state.copy(
-                userFillTable = userFillTable + TableRow(tableId = tableId, index = _nextIndex++)
+                userFillTable = userFillTable + TableRow(tableId = tableId, index = _nextRowIndex++)
             )
         }
     }
@@ -283,7 +280,8 @@ class UserFillViewModel(
 
     fun addTable() {
         // 这里应该询问是否保存,暂时不做，通过这个先保存
-        saveAll()
+        changeTableName(_state.value.inputTableName)
+        saveCurrentTable()
         viewModelScope.launch {
             createDefaultTableAndLoad()
         }
