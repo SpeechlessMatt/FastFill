@@ -122,6 +122,7 @@ fun UserFillTable(
         shadowElevation = 1.dp
     ) {
         Box {
+            // 匹配表主体部分
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -131,6 +132,7 @@ fun UserFillTable(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // 表头
                 stickyHeader {
                     Row(
                         modifier = Modifier
@@ -207,7 +209,7 @@ fun UserFillTable(
 
                                         },
                                     ),
-                                painter = painterResource(R.drawable.search),
+                                painter = painterResource(R.drawable.expand),
                                 contentDescription = null,
                                 tint = Color.Gray
                             )
@@ -276,6 +278,10 @@ fun UserFillTable(
                 }
             }
 
+            /*
+             * 第二层： 模糊层
+             * 模糊层淡入淡出
+             */
             AnimatedVisibility(
                 modifier = Modifier.align(Alignment.TopCenter),
                 visible = uiState.isShowEditView,
