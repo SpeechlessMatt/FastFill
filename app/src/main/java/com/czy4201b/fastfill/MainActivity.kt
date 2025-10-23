@@ -9,11 +9,14 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,6 +35,7 @@ import com.czy4201b.fastfill.javaScripts.impl.TxDocFill
 import com.czy4201b.fastfill.ui.ModernFilledButton
 import com.czy4201b.fastfill.ui.ModernOutlinedButton
 import com.czy4201b.fastfill.ui.SnackBar
+import com.czy4201b.fastfill.ui.TabBar
 import com.czy4201b.fastfill.ui.URLTextField
 import com.czy4201b.fastfill.ui.UserFillTable
 import com.czy4201b.fastfill.ui.theme.FastFillTheme
@@ -75,6 +79,13 @@ fun MainView(
     vm: MainViewViewModel = viewModel()
 ) {
     val uiState by vm.state.collectAsState()
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 3 })
+
+    LaunchedEffect(uiState.currentTab) {
+        if (pagerState.currentPage != uiState.currentTab) {
+            pagerState.animateScrollToPage(uiState.currentTab)
+        }
+    }
 
     LaunchedEffect(Unit) {
         vm.apply {
@@ -180,14 +191,36 @@ fun MainView(
                 }
             }
 
-            // 用户填入的匹配表 暂时不支持room写入内部存储
-            UserFillTable(
+            Spacer(Modifier.height(8.dp))
+
+            TabBar(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(380.dp) // 高度未定，再说
-                    .padding(8.dp), // 遵循设计规范 8.dp
-                vm = userFillViewModel
+                    .padding(horizontal = 4.dp)
+                    .fillMaxWidth(),
+                tabList = listOf("数据", "定时", "自定义"),
+                currentTab = uiState.currentTab,
+                onTabClicked = {
+                    vm.selectTab(it)
+                }
             )
+
+            HorizontalPager(
+                state = pagerState,
+                userScrollEnabled = false
+            ) { page ->
+                when (page) {
+                    0 -> UserFillTable(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(380.dp) // 高度未定，再说
+                            .padding(8.dp), // 遵循设计规范 8.dp
+                        vm = userFillViewModel
+                    )
+                }
+            }
+
+            // 用户填入的匹配表 暂时不支持room写入内部存储
+
 
 //            SubmitTimeTable(
 //                modifier = Modifier.fillMaxWidth().padding(8.dp),

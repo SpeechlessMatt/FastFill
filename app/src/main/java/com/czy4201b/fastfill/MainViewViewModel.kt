@@ -17,10 +17,10 @@ import kotlinx.coroutines.launch
 data class MainViewUiState(
     val url: String = "",
     val loginMap: Map<FastFillJS, Boolean> = mutableStateMapOf(),
+    val currentTab: Int = 0,
     val isShowLoginWeb: Boolean = false,
     val isUrlInvalid: Boolean = false,
     val isStartFilling: Boolean = false,
-    val isShowTimeTable: Boolean = true,
 )
 
 class MainViewViewModel : ViewModel() {
@@ -44,11 +44,10 @@ class MainViewViewModel : ViewModel() {
         checkAllLogin()
     }
 
-    fun setShowTimeTable(isShow: Boolean) {
-        Log.d("temp", "isShow: $isShow")
+    fun selectTab(index: Int){
         _state.update { state ->
             state.copy(
-                isShowTimeTable = isShow
+                currentTab = index
             )
         }
     }

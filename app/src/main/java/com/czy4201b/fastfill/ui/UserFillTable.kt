@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -37,7 +36,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -54,7 +52,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -71,7 +68,6 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
@@ -359,6 +355,7 @@ fun UserFillTable(
                         )
                     }
 
+                    // picker
                     AnimatedVisibility(
                         visible = uiState.isShowPicker,
                     ) {
@@ -381,10 +378,10 @@ fun UserFillTable(
                                 items(
                                     otherTables.sortedByDescending { it.createdAt },
                                     key = { it.tableId }
-                                )
-                                {
+                                ) {
                                     Row(
                                         modifier = Modifier
+                                            .clip(RoundedCornerShape(4.dp))
                                             .animateItem(
                                                 placementSpec = tween(
                                                     durationMillis = 600,
@@ -396,10 +393,11 @@ fun UserFillTable(
                                                 )
                                             )
                                             .fillMaxWidth()
-                                            .padding(end = 8.dp)
+                                            .padding(end = 8.dp),
                                     ) {
                                         Text(
-                                            it.name, modifier = Modifier
+                                            text = it.name,
+                                            modifier = Modifier
                                                 .weight(1f)
                                                 .clickable(
                                                     onClick = { vm.selectTable(it.tableId) },
