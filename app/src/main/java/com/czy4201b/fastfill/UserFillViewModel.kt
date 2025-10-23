@@ -1,7 +1,11 @@
 package com.czy4201b.fastfill
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.czy4201b.fastfill.room.AppDb
@@ -79,7 +83,7 @@ class UserFillViewModel(
     private val _state = MutableStateFlow(UserFillViewUiState())
     val state: StateFlow<UserFillViewUiState> = _state.asStateFlow()
 
-    private var nextIndex = 0
+    private var _nextIndex by mutableIntStateOf(0)
 
     init {
         Log.d("Database", "init Database")
@@ -95,7 +99,7 @@ class UserFillViewModel(
         }
     }
 
-    private suspend fun createDefaultTableAndLoad(): TableMeta = tableMutex.withLock  {
+    private suspend fun createDefaultTableAndLoad(): TableMeta = tableMutex.withLock {
         val defaultMeta = TableMeta(name = "新建表格")
         dao.insertMeta(defaultMeta)          // 插入新表格
         Log.d("Database", "createDefaultTable and Load")
@@ -134,6 +138,7 @@ class UserFillViewModel(
 
                 // 加载表格行数据到 userFillTable
                 val rows = dao.observeRows(tableId).first()  // 使用.first()来获取当前时刻的数据。
+                _nextIndex = rows.maxByOrNull { it.index }?.index?: 0
 
                 _state.update { state ->
                     state.copy(
@@ -193,7 +198,7 @@ class UserFillViewModel(
         _state.update { state ->
             val userFillTable = state.userFillTable
             state.copy(
-                userFillTable = userFillTable + TableRow(tableId = tableId, index = nextIndex++)
+                userFillTable = userFillTable + TableRow(tableId = tableId, index = _nextIndex++)
             )
         }
     }
@@ -213,7 +218,7 @@ class UserFillViewModel(
             state.copy(
                 userFillTable = userFillTable.map { row ->
                     if (row.id == id)
-                        row.copy(key = key?: row.key, value = value?: row.value)
+                        row.copy(key = key ?: row.key, value = value ?: row.value)
                     else
                         row
                 }
