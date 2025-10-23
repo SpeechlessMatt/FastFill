@@ -289,7 +289,6 @@ fun UserFillTable(
                             interactionSource = null
                         )
                         .padding(start = 60.dp, end = 60.dp, top = 60.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
                         "表格名称",
@@ -351,6 +350,7 @@ fun UserFillTable(
                     ) {
                         LazyColumn(
                             Modifier
+                                .padding(8.dp)
                                 .heightIn(max = 90.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
@@ -409,7 +409,7 @@ fun UserFillTable(
                         }
                     }
 
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(8.dp))
 
                     Button(
                         modifier = Modifier
@@ -426,6 +426,8 @@ fun UserFillTable(
                     ) {
                         Text("取消", modifier = Modifier.padding(horizontal = 8.dp))
                     }
+
+                    Spacer(Modifier.height(4.dp))
 
                     Button(
                         modifier = Modifier

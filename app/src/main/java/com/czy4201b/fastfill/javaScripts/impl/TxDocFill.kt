@@ -67,7 +67,7 @@ object TxDocFill : BaseFastFillJS() {
                     var btn = document.querySelector(selector);
                     if (btn) {
                         ob.disconnect();
-                        btn.click();
+                        setTimeout(() => { btn.click(); }, 100);
                         resolve();
                     } else if (Date.now() - start > timeout) {
                         ob.disconnect();
