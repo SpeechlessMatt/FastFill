@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -36,6 +37,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -83,13 +85,13 @@ fun UserFillTable(
 
     // 理论上不用放在vm里面
     val listState = rememberLazyListState()
-    val headerAlpha by animateFloatAsState(
-        targetValue = if (uiState.isShowEditView) 0f else 1f,
-        animationSpec = tween(
-            durationMillis = 400,
-            easing = FastOutSlowInEasing
-        )
-    )
+//    val headerAlpha by animateFloatAsState(
+//        targetValue = if (uiState.isShowEditView) 0f else 1f,
+//        animationSpec = tween(
+//            durationMillis = 400,
+//            easing = FastOutSlowInEasing
+//        )
+//    )
     val hazeState = rememberHazeState()
     val blurRadius by animateDpAsState(
         targetValue = if (uiState.isShowEditView) 10.dp else 0.dp,
@@ -133,7 +135,6 @@ fun UserFillTable(
                         modifier = Modifier
                             .height(40.dp)
                             .fillMaxWidth()
-                            .alpha(headerAlpha)
                             .hazeEffect(
                                 state = hazeState,
                                 style = HazeStyle(
@@ -218,6 +219,10 @@ fun UserFillTable(
                         modifier = Modifier.animateItem(
                             placementSpec = tween(
                                 durationMillis = 600,
+                                easing = FastOutSlowInEasing
+                            ),
+                            fadeInSpec = tween(
+                                durationMillis = 400,
                                 easing = FastOutSlowInEasing
                             ),
                         ),
@@ -345,7 +350,6 @@ fun UserFillTable(
                         )
                     }
 
-                    // BUG 出现了莫名的回弹动画，等待修复
                     AnimatedVisibility(
                         visible = uiState.isShowPicker,
                     ) {
@@ -355,7 +359,7 @@ fun UserFillTable(
                                 .heightIn(max = 90.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            items(otherTables, key = { it.updatedAt }) {
+                            items(otherTables.sortedByDescending { it.updatedAt }, key = { it.tableId }) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -367,10 +371,11 @@ fun UserFillTable(
                                                 role = Role.Button
                                             )
                                     )
-                                    Icon(
+                                    Box(
                                         modifier = Modifier
+                                            .padding(8.dp)
                                             .clip(CircleShape)
-                                            .rotate(degrees = rotateDegree)
+                                            .rotate(rotateDegree)
                                             .clickable(
                                                 onClick = {
                                                     vm.deleteTable(it)
@@ -378,10 +383,15 @@ fun UserFillTable(
                                                 indication = null,
                                                 interactionSource = null
                                             ),
-                                        imageVector = Icons.Outlined.Close,
-                                        contentDescription = null,
-                                        tint = Color.Gray
-                                    )
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.size(20.dp),
+                                            imageVector = Icons.Outlined.Close,
+                                            contentDescription = null,
+                                            tint = Color.Gray
+                                        )
+                                    }
+
                                 }
                             }
 
@@ -389,7 +399,6 @@ fun UserFillTable(
                             item {
                                 Row(
                                     modifier = Modifier
-                                        .fillMaxWidth()
                                         .clickable {
                                             // 添加新表格的逻辑
                                             vm.addTable()
