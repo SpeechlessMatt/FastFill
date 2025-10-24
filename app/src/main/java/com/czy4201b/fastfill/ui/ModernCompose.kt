@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +37,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.czy4201b.fastfill.ui.theme.AlmostBlack
+import com.czy4201b.fastfill.ui.theme.FastFillTheme
+import com.czy4201b.fastfill.ui.theme.Gray500
 
 @Composable
 fun ModernFilledButton(
@@ -54,10 +58,10 @@ fun ModernFilledButton(
             ),
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF212121),
-            disabledContainerColor = Color(0xFFE0E0E0),
-            contentColor = Color.White,
-            disabledContentColor = Color(0xFF9E9E9E)
+            containerColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
         ),
         shape = RoundedCornerShape(8.dp),
         content = content
@@ -77,16 +81,16 @@ fun ModernOutlinedButton(
             .height(48.dp),
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFFFFFF),
-            disabledContainerColor = Color(0xFFFAFAFA),
-            contentColor = Color(0xFF424242),
-            disabledContentColor = Color(0xFFBDBDBD)
+            containerColor = Color.Transparent,
+            disabledContainerColor = MaterialTheme.colorScheme.primary,
+            contentColor = Color.Transparent,
+            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
         ),
         shape = RoundedCornerShape(8.dp),
         content = content,
         border = if (enabled) BorderStroke(
             width = 1.dp,
-            color = Color(0xFFBDBDBD)
+            color = MaterialTheme.colorScheme.outline
         ) else BorderStroke(width = 1.dp, color = Color(0xFFEEEEEE))
     )
 }
@@ -115,11 +119,11 @@ fun ModernSwitch(
     val focusGap = with(density) { 4.dp.toPx() }
 
     // 颜色
-    val trackOff = Color(0xFFE0E0E0)
-    val trackOn = Color(0xFF424242)
+    val trackOff = MaterialTheme.colorScheme.outline
+    val trackOn = MaterialTheme.colorScheme.primary
     val thumbNorm = Color.White
-    val trackDisabled = Color(0xFFF5F5F5)
-    val thumbDisabled = Color(0xFFFAFAFA)
+    val trackDisabled = MaterialTheme.colorScheme.surfaceVariant
+    val thumbDisabled = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
 
     // 动画
     val transition = updateTransition(checked, label = "switch")
@@ -169,7 +173,7 @@ fun ModernSwitch(
         // 聚焦外框
         if (enabled) {
             drawRoundRect(
-                color = Color(0xFF212121),
+                color = AlmostBlack,
                 size = Size(canvasWidth + focusGap * 2, canvasHeight + focusGap * 2),
                 cornerRadius = CornerRadius(trackHeight / 2 + focusGap),
                 style = Stroke(width = focusStroke),

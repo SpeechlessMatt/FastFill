@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +28,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -36,6 +42,7 @@ import com.czy4201b.fastfill.ui.ModernFilledButton
 import com.czy4201b.fastfill.ui.ModernOutlinedButton
 import com.czy4201b.fastfill.ui.SnackBar
 import com.czy4201b.fastfill.ui.TabBar
+import com.czy4201b.fastfill.ui.TabPager
 import com.czy4201b.fastfill.ui.URLTextField
 import com.czy4201b.fastfill.ui.UserFillTable
 import com.czy4201b.fastfill.ui.theme.FastFillTheme
@@ -79,13 +86,6 @@ fun MainView(
     vm: MainViewViewModel = viewModel()
 ) {
     val uiState by vm.state.collectAsState()
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 3 })
-
-    LaunchedEffect(uiState.currentTab) {
-        if (pagerState.currentPage != uiState.currentTab) {
-            pagerState.animateScrollToPage(uiState.currentTab)
-        }
-    }
 
     LaunchedEffect(Unit) {
         vm.apply {
@@ -147,7 +147,7 @@ fun MainView(
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
-                    Text("登录")
+                    Text("登录", color = MaterialTheme.colorScheme.primary)
                 }
             }
 
@@ -174,7 +174,7 @@ fun MainView(
                     .padding(8.dp), // 遵循设计规范 8.dp
                 enabled = uiState.loginMap[TxDocFill] == true
             ) {
-                Text("开始自动化填入")
+                Text("开始自动化填入", color = MaterialTheme.colorScheme.onPrimary)
             }
 
             // 退出登录按钮
@@ -187,7 +187,7 @@ fun MainView(
                         .fillMaxWidth()
                         .padding(8.dp) // 遵循设计规范 8.dp
                 ) {
-                    Text("退出登录")
+                    Text("退出登录", color = MaterialTheme.colorScheme.primary)
                 }
             }
 
@@ -204,29 +204,26 @@ fun MainView(
                 }
             )
 
-            HorizontalPager(
-                state = pagerState,
-                userScrollEnabled = false
+            TabPager(
+                pageCount = 3,
+                currentPage = uiState.currentTab,
             ) { page ->
                 when (page) {
                     0 -> UserFillTable(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(380.dp) // 高度未定，再说
-                            .padding(8.dp), // 遵循设计规范 8.dp
+                            .padding(8.dp) // 遵循设计规范 8.dp
+                            .height(400.dp), // 高度未定，再说
                         vm = userFillViewModel
                     )
+                    1 -> Column {
+                        Text("99999")
+                    }
+                    2 -> Column {
+                        Text("99999")
+                    }
                 }
             }
-
-            // 用户填入的匹配表 暂时不支持room写入内部存储
-
-
-//            SubmitTimeTable(
-//                modifier = Modifier.fillMaxWidth().padding(8.dp),
-//                onConfirm = {},
-//                onDismiss = {}
-//            )
         }
     }
 

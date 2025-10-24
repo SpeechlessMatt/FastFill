@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -43,17 +45,17 @@ fun URLTextField(
     var isFocused by remember { mutableStateOf(false) }
     // If color is not provided via the text style, use content color as a default
     val fontSize = textStyle.fontSize.takeOrElse { 12.sp }
-    val fontColor = textStyle.color.takeOrElse { Color(0xFF212121) }
+    val fontColor = textStyle.color.takeOrElse { MaterialTheme.colorScheme.onSurface }
     val mergedTextStyle = textStyle.merge(TextStyle(fontSize = fontSize, color = fontColor))
 
     Surface(
         modifier = modifier,
-        color = if (enabled) Color(0xFFFFFFFF)
-        else Color(0xFFF5F5F5),
+        color = if (enabled) MaterialTheme.colorScheme.surface
+        else MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(8.dp),
-        border = if (isError) BorderStroke(width = 1.dp, color = Color(0xFFFF5252))
-        else if (isFocused) BorderStroke(width = 1.dp, color = Color(0xFF757575))
-        else BorderStroke(width = 1.dp, color = Color(0xFFE0E0E0)),
+        border = if (isError) BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.error)
+        else if (isFocused) BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+        else BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
         shadowElevation = 0.5.dp
     ) {
         Row(
@@ -74,6 +76,7 @@ fun URLTextField(
                 readOnly = readOnly,
                 maxLines = maxLines,
                 textStyle = mergedTextStyle,
+                cursorBrush = SolidColor(fontColor),
                 decorationBox = { innerTextField ->
                     Box(
                         contentAlignment = Alignment.CenterStart,
@@ -81,7 +84,7 @@ fun URLTextField(
                         Box(
                             modifier = Modifier.alpha(if (value.isEmpty()) 1f else 0f)
                         ) {
-                            Text(text = label, color = Color(0xFF9E9E9E))
+                            Text(text = label, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
                         }
                         innerTextField()
                     }

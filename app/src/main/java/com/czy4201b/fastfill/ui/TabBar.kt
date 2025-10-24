@@ -1,5 +1,6 @@
 package com.czy4201b.fastfill.ui
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,11 +39,13 @@ fun TabBar(
         targetValue = width * currentTab,
         animationSpec = tween(
             durationMillis = 300,
+            easing = FastOutSlowInEasing
         )
     )
 
     Surface(
         modifier = modifier,
+        color = Color.Transparent,
         shape = RoundedCornerShape(8.dp)
     ) {
         Column {
@@ -62,9 +66,9 @@ fun TabBar(
                         Text(
                             text = text,
                             color = if (idx == currentTab)
-                                Color(0xFF212121)
+                                MaterialTheme.colorScheme.primary
                             else
-                                Color(0xFF757575),
+                                MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = if (idx == currentTab)
                                 FontWeight.SemiBold
                             else
@@ -77,7 +81,7 @@ fun TabBar(
                 modifier = Modifier
                     .offset((width - slideBoxWidth) / 2 + offsetSpacer)
                     .clip(RoundedCornerShape(2.dp))
-                    .background(Color(0xFF212121))
+                    .background(MaterialTheme.colorScheme.primary)
                     .width(16.dp)
                     .height(2.dp)
             )

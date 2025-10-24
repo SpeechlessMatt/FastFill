@@ -11,6 +11,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,11 +60,16 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.czy4201b.fastfill.R
 import com.czy4201b.fastfill.UserFillViewModel
+import com.czy4201b.fastfill.ui.theme.DarkCustomBackground
+import com.czy4201b.fastfill.ui.theme.DarkHazeStyle
+import com.czy4201b.fastfill.ui.theme.LightCustomBackground
+import com.czy4201b.fastfill.ui.theme.LightHazeStyle
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -113,7 +119,7 @@ fun UserFillTable(
 
     Surface(
         modifier = modifier,
-        color = Color(0xFFF8F9FA),
+        color = if (isSystemInDarkTheme()) DarkCustomBackground else LightCustomBackground,
         shape = RoundedCornerShape(8.dp),
         shadowElevation = 1.dp
     ) {
@@ -136,12 +142,7 @@ fun UserFillTable(
                             .fillMaxWidth()
                             .hazeEffect(
                                 state = hazeState,
-                                style = HazeStyle(
-                                    backgroundColor = Color.White.copy(alpha = 0.20f), // 底板透亮
-                                    tint = HazeTint(Color.White.copy(alpha = 0.15f)),  // 再刷一层淡淡白雾
-                                    blurRadius = 20.dp,                                // 20-30 之间最自然
-                                    noiseFactor = 0.05f                                // 细腻磨砂颗粒
-                                )
+                                style = if (isSystemInDarkTheme()) DarkHazeStyle else LightHazeStyle
                             )
                             .pointerInput(Unit) {
                                 detectTapGestures(
@@ -159,7 +160,8 @@ fun UserFillTable(
                         Text(
                             text = "匹配表",
                             modifier = Modifier.padding(8.dp),
-                            fontWeight = FontWeight.Light
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Light,
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         Row(
@@ -237,7 +239,6 @@ fun UserFillTable(
                         ) {
                             TableTextField(
                                 modifier = Modifier
-                                    .background(color = Color.Transparent)
                                     .weight(1f),
                                 onValueChange = { newKey ->
                                     vm.updateTableRow(id = row.id, key = newKey)
@@ -247,14 +248,15 @@ fun UserFillTable(
                                 placeholder = {
                                     Text(
                                         "请输入问题",
-                                        color = Color.Gray,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.6f
+                                        ),
                                         fontSize = 12.sp
                                     )
                                 }
                             )
                             TableTextField(
                                 modifier = Modifier
-                                    .background(color = Color.Transparent)
                                     .weight(1f),
                                 onValueChange = { newValue ->
                                     vm.updateTableRow(id = row.id, value = newValue)
@@ -264,7 +266,9 @@ fun UserFillTable(
                                 placeholder = {
                                     Text(
                                         "请输入答案",
-                                        color = Color.Gray,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.6f
+                                        ),
                                         fontSize = 12.sp
                                     )
                                 }
@@ -299,7 +303,7 @@ fun UserFillTable(
                             indication = null,
                             interactionSource = null
                         )
-                        .padding(start = 50.dp, end = 50.dp, top = 60.dp),
+                        .padding(start = 50.dp, end = 50.dp, top = 70.dp),
                 ) {
                     Text(
                         "表格名称",
@@ -317,7 +321,10 @@ fun UserFillTable(
                                 .onFocusChanged { focusState ->
                                     isFocused = focusState.isFocused
                                 },
-                            textStyle = TextStyle(fontSize = 16.sp),
+                            textStyle = TextStyle(
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            ),
                             maxLines = 1,
                             value = uiState.inputTableName,
                             onValueChange = {
@@ -330,7 +337,12 @@ fun UserFillTable(
                                     Box(
                                         modifier = Modifier.alpha(if (uiState.inputTableName.isEmpty()) 1f else 0f)
                                     ) {
-                                        Text(text = "请输入表格名称", color = Color(0xFF9E9E9E))
+                                        Text(
+                                            text = "请输入表格名称",
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                                alpha = 0.6f
+                                            )
+                                        )
                                     }
                                     innerTextField()
                                     HorizontalDivider(
@@ -463,10 +475,10 @@ fun UserFillTable(
                         onClick = {
                             vm.closeEditView()
                         },
-                        border = BorderStroke(width = 1.dp, color = Color(0xFFBDBDBD)),
+                        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
-                            contentColor = Color(0xFF757575),
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         ),
                     ) {
                         Text("取消", modifier = Modifier.padding(horizontal = 8.dp))
@@ -482,10 +494,8 @@ fun UserFillTable(
                             vm.saveAll()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF212121),
-//                            disabledContainerColor = Color(0xFFFAFAFA),
-                            contentColor = Color(0xFFFFFFFF),
-//                            disabledContentColor = Color(0xFFBDBDBD)
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                     ) {
                         Text("保存", modifier = Modifier.padding(horizontal = 8.dp))
