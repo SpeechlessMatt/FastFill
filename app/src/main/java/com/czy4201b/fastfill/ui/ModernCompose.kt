@@ -38,8 +38,6 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.czy4201b.fastfill.ui.theme.AlmostBlack
-import com.czy4201b.fastfill.ui.theme.FastFillTheme
-import com.czy4201b.fastfill.ui.theme.Gray500
 
 @Composable
 fun ModernFilledButton(
