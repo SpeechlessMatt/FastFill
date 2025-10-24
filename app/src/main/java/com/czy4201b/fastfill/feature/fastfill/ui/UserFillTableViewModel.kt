@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.collections.plus
 
 class UserFillTableViewModel(
     private val dao: TableDao = AppDb.Companion.get(FastFillApplication.Companion.instance).tableDao()

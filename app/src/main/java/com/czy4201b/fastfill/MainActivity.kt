@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.czy4201b.fastfill.core.theme.FastFillTheme
 import com.czy4201b.fastfill.feature.fastfill.ui.MainView
 
@@ -25,37 +27,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FastFillTheme {
-                Scaffold(
-                    modifier = Modifier.Companion.fillMaxSize(),
-                    topBar = {
-                        Row(
-                            modifier = Modifier.Companion.padding(
-                                16.dp,
-                                top = 38.dp,
-                                bottom = 10.dp
-                            )
-                        ) {
-                            Text(
-                                text = "FastFill",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontFamily = FontFamily.Companion.Serif
-                            )
-                        }
-                    }
-                ) { innerPadding ->
-                    MainView(
-                        modifier = Modifier.Companion.padding(innerPadding)
-                    )
-                }
+                MainView(
+                    modifier = Modifier.fillMaxSize(),
+                    userFillTableViewModel = viewModel(),
+                    timeSettingsViewModel = viewModel(),
+                    vm = viewModel()
+                )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainViewPreview() {
-    FastFillTheme {
-        MainView()
     }
 }

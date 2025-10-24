@@ -1,7 +1,6 @@
 package com.czy4201b.fastfill.feature.fastfill.ui
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.czy4201b.fastfill.feature.fastfill.javaScripts.FastFillJS

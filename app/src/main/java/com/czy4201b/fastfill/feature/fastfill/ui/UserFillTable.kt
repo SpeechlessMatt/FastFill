@@ -124,7 +124,14 @@ fun UserFillTable(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .blur(radius = blurRadius),
+                    .blur(radius = blurRadius)
+                    .clickable(
+                        onClick = {
+                            focusManager.clearFocus()
+                        },
+                        indication = null,
+                        interactionSource = null
+                    ),
                 state = listState,
                 contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
