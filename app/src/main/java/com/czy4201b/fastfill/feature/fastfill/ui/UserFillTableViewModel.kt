@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.czy4201b.fastfill.FastFillApplication
-import com.czy4201b.fastfill.core.AppDb
+import com.czy4201b.fastfill.core.database.AppDb
 import com.czy4201b.fastfill.feature.fastfill.data.TableDao
 import com.czy4201b.fastfill.feature.fastfill.data.TableMeta
 import com.czy4201b.fastfill.feature.fastfill.data.TableRow

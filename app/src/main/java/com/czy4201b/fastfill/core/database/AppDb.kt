@@ -1,4 +1,4 @@
-package com.czy4201b.fastfill.core
+package com.czy4201b.fastfill.core.database
 
 import android.content.Context
 import androidx.room.Database
