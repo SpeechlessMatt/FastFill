@@ -119,7 +119,9 @@ fun TimeSettings(
                             }
                         }
                         vm.setStartTimeEnable(enable)
-                    }
+                    },
+                    // 暂时
+                    enabled = false
                 )
             }
 
@@ -140,7 +142,7 @@ fun TimeSettings(
                     )
                     Button(
                         onClick = {
-                            vm.setOneTimeAlarm(applicationContext)
+//                            vm.setOneTimeAlarm(applicationContext)
                         }
                     ) {
                         Text("fuck")

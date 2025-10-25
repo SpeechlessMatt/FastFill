@@ -168,7 +168,8 @@ fun MainView(
                     modifier = Modifier
                         .padding(horizontal = 4.dp)
                         .fillMaxWidth(),
-                    tabList = listOf("数据", "定时", "自定义"),
+//                    tabList = listOf("数据", "定时", "自定义"),
+                    tabList = listOf("数据", "定时"),
                     currentTab = uiState.currentTab,
                     onTabClicked = {
                         vm.selectTab(it)
@@ -176,7 +177,7 @@ fun MainView(
                 )
 
                 TabPager(
-                    pageCount = 3,
+                    pageCount = 2,
                     currentPage = uiState.currentTab,
                 ) { page ->
                     when (page) {
@@ -195,10 +196,10 @@ fun MainView(
                                 .height(400.dp),
                             vm = timeSettingsViewModel
                         )
-
-                        2 -> Column {
-                            Text("99999")
-                        }
+//
+//                        2 -> Column {
+//                            Text("99999")
+//                        }
                     }
                 }
             }
