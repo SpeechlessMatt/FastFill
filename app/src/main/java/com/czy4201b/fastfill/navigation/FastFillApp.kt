@@ -25,7 +25,6 @@ fun FastFillApp() {
     }
 
     FastFillNavHost(
-        mainVm = mainViewModel,
         updateVm = updateViewModel,
         navController = navController
     )
