@@ -57,3 +57,16 @@ class GitHubUpdateRepository @Inject constructor(
         }
     }
 }
+
+@Singleton
+class FakeUpdateRepository @Inject constructor() : UpdateRepository {
+
+    override suspend fun getLatest(owner: String, repo: String): UpdateInfo {
+        // 直接返回假数据，不经过网络
+        return UpdateInfo(
+            version = "v1.0.10",
+            publishedAt = "2023-12-01T12:00:00Z",
+            apkUrl = "https://example.com/fake-app.apk",
+            changelog = "假版本用于测试\n- 功能1\n- 功能2")
+    }
+}

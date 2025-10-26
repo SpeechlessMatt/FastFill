@@ -1,5 +1,6 @@
 package com.czy4201b.fastfill.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import com.czy4201b.fastfill.MainViewModel
+import com.czy4201b.fastfill.core.navigation.Route
 import com.czy4201b.fastfill.feature.fastfill.ui.MainView
 import com.czy4201b.fastfill.feature.update.UpdateViewModel
 import com.czy4201b.fastfill.feature.update.ui.UpdateDialog
@@ -20,19 +22,14 @@ fun FastFillNavHost(
     modifier: Modifier = Modifier,
     mainVm: MainViewModel,
     updateVm: UpdateViewModel,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController
 ) {
-    LaunchedEffect(Unit) {
-        mainVm.setNavController(navController)
-        mainVm.setupUpdateListening(updateVm) // 设置监听
-    }
-
     NavHost(
         navController = navController,
         modifier = modifier,
-        startDestination = "main"
+        startDestination = Route.Main.route
     ) {
-        composable("main") {
+        composable(Route.Main.route) {
             MainView(
                 modifier = Modifier,
                 userFillTableViewModel = viewModel(),
@@ -41,9 +38,12 @@ fun FastFillNavHost(
             )
         }
 
-        dialog("update_dialog") { backStackEntry ->
+        dialog(Route.UpdateDialog.route) { backStackEntry ->
+            Log.d("Update", "route to dialog now")
             // 使用传递进来的 updateVm，而不是新建
-            UpdateDialog(updateVm)
+            UpdateDialog(updateVm) {
+                navController.popBackStack()
+            }
         }
     }
 }

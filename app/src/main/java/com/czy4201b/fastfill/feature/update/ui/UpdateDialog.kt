@@ -1,40 +1,64 @@
 package com.czy4201b.fastfill.feature.update.ui
 
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.czy4201b.fastfill.feature.update.UpdateViewModel
+import androidx.core.net.toUri
 
 @Composable
 fun UpdateDialog(
-    updateVm: UpdateViewModel
+    updateVm: UpdateViewModel,
+    onDismiss: () -> Unit
 ) {
-    val info by updateVm.updateInfo.collectAsStateWithLifecycle() // 版本信息
+    val context = LocalContext.current
+    val info by updateVm.updateInfo.collectAsStateWithLifecycle()
 
     AlertDialog(
-        onDismissRequest = {  },   // 关闭事件
+        onDismissRequest = onDismiss,
         title = { Text("发现新版本 ${info?.version ?: ""}") },
         text = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 250.dp)
+                    .verticalScroll(rememberScrollState()),
+            ) {
                 Text("发布时间：${info?.publishedAt ?: ""}")
-                Text(text = info?.changelog ?: "", maxLines = 5)
+                Text(text = info?.changelog ?: "")
             }
         },
         confirmButton = {
             Button(
-                onClick = {  }, // 下载
-                enabled = true
+                onClick = {
+                    // 暂时不开发下载功能哦
+                    info?.apkUrl?.let {
+                        val intent = Intent(Intent.ACTION_VIEW, it.toUri());
+                        context.startActivity(intent)
+                    }
+                },
             ) {
-                Text(if (true) "下载中…" else "立即更新")
+                Text("立即更新")
             }
         },
         dismissButton = {
-            TextButton(onClick = { }) {
+            TextButton(onClick = onDismiss) {
                 Text("稍后")
             }
         }
