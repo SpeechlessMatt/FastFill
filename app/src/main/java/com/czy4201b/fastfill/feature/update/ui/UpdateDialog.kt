@@ -1,10 +1,6 @@
 package com.czy4201b.fastfill.feature.update.ui
 
 import android.content.Intent
-import android.net.Uri
-import android.util.Log
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
@@ -14,14 +10,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.czy4201b.fastfill.feature.update.UpdateViewModel
-import androidx.core.net.toUri
 
 @Composable
 fun UpdateDialog(
@@ -49,7 +44,7 @@ fun UpdateDialog(
                 onClick = {
                     // 暂时不开发下载功能哦
                     info?.apkUrl?.let {
-                        val intent = Intent(Intent.ACTION_VIEW, it.toUri());
+                        val intent = Intent(Intent.ACTION_VIEW, it.toUri())
                         context.startActivity(intent)
                     }
                 },

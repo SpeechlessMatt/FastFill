@@ -6,8 +6,8 @@ import com.czy4201b.fastfill.feature.fastfill.data.TableDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Singleton
 
 @Module

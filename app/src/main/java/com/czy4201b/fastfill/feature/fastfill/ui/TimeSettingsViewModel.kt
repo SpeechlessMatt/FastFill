@@ -4,16 +4,12 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.provider.Settings
 import androidx.lifecycle.ViewModel
 import com.czy4201b.fastfill.feature.fastfill.notification.AlarmReceiver
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import androidx.core.net.toUri
 
 class TimeSettingsViewModel : ViewModel() {
     private val _state = MutableStateFlow(TimeSettingsUiState())

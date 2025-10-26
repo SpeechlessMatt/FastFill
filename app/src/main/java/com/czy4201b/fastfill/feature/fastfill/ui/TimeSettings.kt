@@ -2,7 +2,6 @@ package com.czy4201b.fastfill.feature.fastfill.ui
 
 import android.Manifest
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
@@ -10,7 +9,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,13 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.czy4201b.fastfill.core.components.ModernSwitch
 import com.czy4201b.fastfill.core.permission.rememberExactAlarmLauncher
 import com.czy4201b.fastfill.core.theme.DarkCustomBackground
 import com.czy4201b.fastfill.core.theme.LightCustomBackground
-import androidx.core.net.toUri
 
 @Composable
 fun TimeSettings(
