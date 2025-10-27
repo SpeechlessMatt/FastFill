@@ -37,7 +37,11 @@ class UpdateViewModel @Inject constructor(
     private val _hasUpdate = MutableStateFlow<Boolean>(false)
     val hasUpdate: StateFlow<Boolean> = _hasUpdate
 
+    private val _hasShowDialog = MutableStateFlow(false)
+    val hasShowDialog: StateFlow<Boolean> = _hasShowDialog
+
     fun checkUpdate(owner: String, repo: String) {
+        if (_hasShowDialog.value) return
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -51,6 +55,7 @@ class UpdateViewModel @Inject constructor(
                 if (canUpdate){
                     Log.d("Update", "发现新版本!")
                     _hasUpdate.value = true
+                    _hasShowDialog.value = true
                     _events.emit(UpdateEvent.ShowUpdateDialog(info))
                 } else {
                     Log.d("Update", "未发现新版本")
