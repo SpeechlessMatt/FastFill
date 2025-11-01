@@ -158,9 +158,16 @@ fun TimeSettings(
         onResultNull = { vm.closeTimePicker() },
         onResult = { vm.selectTime() },
         modifier = Modifier,
+        title = "请选择时间:",
+        titlePadding = PaddingValues(start = 10.dp, top = 4.dp),
+        titleTextStyle = MaterialTheme.typography.bodyLarge.copy(
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        ),
         properties = BottomPickerProperties(
             pickerHeight = 150.dp,
             pickerBarHeight = 25.dp,
+            pickerPadding = PaddingValues(start = 10.dp, end = 10.dp, bottom = 10.dp),
             pickerTitleTextStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold),
             pickerTitlePadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
             pickerContentPadding = PaddingValues(horizontal = 10.dp),
@@ -172,25 +179,25 @@ fun TimeSettings(
         val minute = now.minute
         val second = now.second
 
-        picker(title = "时") {
+        picker(title = "时针") {
             items(
-                items = (hour..23).toList()
+                items = (hour..23).toList() + (0 until hour).toList()
             ) {
                 Text(text = "$it", fontSize = 25.sp)
             }
         }
 
-        picker(title = "分") {
+        picker(title = "分针") {
             items(
-                items = (minute..59).toList() + (0..minute - 1).toList()
+                items = (minute..59).toList() + (0 until minute).toList()
             ) {
                 Text(text = "$it", fontSize = 25.sp)
             }
         }
 
-        picker(title = "秒") {
+        picker(title = "秒针") {
             items(
-                items = (second..59).toList() + (0..second - 1).toList()
+                items = (second..59).toList() + (0 until second).toList()
             ) {
                 Text(text = "$it", fontSize = 25.sp)
             }

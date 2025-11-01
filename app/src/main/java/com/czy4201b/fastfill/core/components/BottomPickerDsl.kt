@@ -157,11 +157,7 @@ class BottomPickerScope<T>(
             ) {
                 items(
                     count = totalCount,
-                    key  = { globalIndex ->
-                        val actualIndex = ((globalIndex % realSize) + realSize) % realSize
-                        // key 以 actualIndex 为准（若每列中项不会重复标识冲突）
-                        actualIndex
-                    }
+                    key  = { it }
                 ) { globalIndex ->
                     val actualIndex = globalIndex % realSize
                     val isCenter = (globalIndex == centerGlobal)

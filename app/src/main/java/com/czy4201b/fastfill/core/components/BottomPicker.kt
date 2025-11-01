@@ -27,6 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -39,11 +41,14 @@ fun <T> BottomPicker(
     onResultNull: () -> Unit,
     onResult: (List<T>) -> Unit,
     modifier: Modifier = Modifier,
+    title: String = "请选择你的选项:",
+    titlePadding: PaddingValues = PaddingValues(0.dp),
+    titleTextStyle: TextStyle = TextStyle(),
     contentPadding: PaddingValues = PaddingValues(8.dp),
     properties: BottomPickerProperties = BottomPickerProperties(),
     block: BottomPickerScope<T>.() -> Unit
 ) {
-    if (shouldShow){
+    if (shouldShow) {
         Dialog(
             onDismissRequest = onResultNull,
             properties = DialogProperties(
@@ -85,6 +90,14 @@ fun <T> BottomPicker(
                                 .padding(contentPadding),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.Start)
+                                    .padding(titlePadding),
+                                text = title,
+                                style = titleTextStyle
+                            )
+
                             Box {
                                 scope.block()
                                 scope.Build()
@@ -95,7 +108,7 @@ fun <T> BottomPicker(
                                 thickness = 1.dp
                             )
 
-                            Spacer(Modifier.height(4.dp))
+                            Spacer(Modifier.height(8.dp))
 
                             Row(
                                 modifier = Modifier.padding(horizontal = 24.dp),
