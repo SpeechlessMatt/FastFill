@@ -167,33 +167,30 @@ fun TimeSettings(
             pickerHorizontalArrangement = Arrangement.spacedBy(10.dp)
         ),
     ) {
-        picker(title = "年份") {
+        val now = java.time.LocalDateTime.now()
+        val hour = now.hour
+        val minute = now.minute
+        val second = now.second
+
+        picker(title = "时") {
             items(
-                items = (1980..2077).toList()
+                items = (hour..23).toList()
             ) {
                 Text(text = "$it", fontSize = 25.sp)
             }
         }
 
-        picker(title = "月份") {
+        picker(title = "分") {
             items(
-                items = (1..12).toList()
+                items = (minute..59).toList() + (0..minute - 1).toList()
             ) {
                 Text(text = "$it", fontSize = 25.sp)
             }
         }
 
-        picker(title = "日期") {
+        picker(title = "秒") {
             items(
-                items = (1..31).toList()
-            ) {
-                Text(text = "$it", fontSize = 25.sp)
-            }
-        }
-
-        picker(title = "时间") {
-            items(
-                items = (0..24).toList()
+                items = (second..59).toList() + (0..second - 1).toList()
             ) {
                 Text(text = "$it", fontSize = 25.sp)
             }

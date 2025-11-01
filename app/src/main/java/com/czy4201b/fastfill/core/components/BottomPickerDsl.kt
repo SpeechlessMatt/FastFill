@@ -102,7 +102,7 @@ class BottomPickerScope<T>(
         selectedValues.add(null)
 
         columns += Pair({
-            val loopCount = 30 // 理论上够你滚很久
+            val loopCount = 10 // 理论上够你滚很久
             val totalCount = realSize * loopCount
             // 外部没给就 remember 一个默认的
             val columnState = state ?: rememberLazyListState(
