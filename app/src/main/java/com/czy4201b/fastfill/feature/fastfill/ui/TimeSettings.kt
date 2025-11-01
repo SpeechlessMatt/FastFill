@@ -166,7 +166,7 @@ fun TimeSettings(
         ),
         properties = BottomPickerProperties(
             pickerHeight = 150.dp,
-            pickerBarHeight = 25.dp,
+            pickerBarHeight = 27.dp,
             pickerPadding = PaddingValues(start = 10.dp, end = 10.dp, bottom = 10.dp),
             pickerTitleTextStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold),
             pickerTitlePadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
