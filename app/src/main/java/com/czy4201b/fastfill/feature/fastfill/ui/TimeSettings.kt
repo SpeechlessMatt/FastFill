@@ -7,7 +7,9 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,9 +24,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import com.czy4201b.fastfill.core.components.BottomPicker
+import com.czy4201b.fastfill.core.components.BottomPickerProperties
 import com.czy4201b.fastfill.core.components.ModernSwitch
 import com.czy4201b.fastfill.core.permission.rememberExactAlarmLauncher
 import com.czy4201b.fastfill.core.theme.DarkCustomBackground
@@ -52,7 +58,7 @@ fun TimeSettings(
                 context,
                 "开启通知权限才能准时提醒你开始哦",
                 Toast.LENGTH_LONG
-            ) .show()
+            ).show()
         },
         onExactAlarmDenied = {
             vm.getNotificationPermission()
@@ -65,7 +71,7 @@ fun TimeSettings(
                 context,
                 "开启精确闹钟权限才能准时提醒你开始哦",
                 Toast.LENGTH_LONG
-            ) .show()
+            ).show()
         }
     )
 
@@ -105,7 +111,7 @@ fun TimeSettings(
                     modifier = Modifier,
                     checked = uiState.isStartTimeEnable,
                     onCheckedChange = { enable ->
-                        if (enable){
+                        if (enable) {
                             // 做个检查，低版本默认就有权限了
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                 permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -117,8 +123,6 @@ fun TimeSettings(
                         }
                         vm.setStartTimeEnable(enable)
                     },
-                    // 暂时
-                    enabled = false
                 )
             }
 
@@ -139,12 +143,59 @@ fun TimeSettings(
                     )
                     Button(
                         onClick = {
-//                            vm.setOneTimeAlarm(applicationContext)
+                            vm.showTimePicker()
                         }
                     ) {
-                        Text("fuck")
+                        Text("设置")
                     }
                 }
+            }
+        }
+    }
+
+    BottomPicker(
+        shouldShow = uiState.isShowTimePicker,
+        onResultNull = { vm.closeTimePicker() },
+        onResult = { vm.selectTime() },
+        modifier = Modifier,
+        properties = BottomPickerProperties(
+            pickerHeight = 150.dp,
+            pickerBarHeight = 25.dp,
+            pickerTitleTextStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold),
+            pickerTitlePadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
+            pickerContentPadding = PaddingValues(horizontal = 10.dp),
+            pickerHorizontalArrangement = Arrangement.spacedBy(10.dp)
+        ),
+    ) {
+        picker(title = "年份") {
+            items(
+                items = (1980..2077).toList()
+            ) {
+                Text(text = "$it", fontSize = 25.sp)
+            }
+        }
+
+        picker(title = "月份") {
+            items(
+                items = (1..12).toList()
+            ) {
+                Text(text = "$it", fontSize = 25.sp)
+            }
+        }
+
+        picker(title = "日期") {
+            items(
+                items = (1..31).toList()
+            ) {
+                Text(text = "$it", fontSize = 25.sp)
+            }
+        }
+
+        picker(title = "时间") {
+            items(
+                items = (0..24).toList()
+            ) {
+                Text(text = "$it", fontSize = 25.sp)
             }
         }
     }

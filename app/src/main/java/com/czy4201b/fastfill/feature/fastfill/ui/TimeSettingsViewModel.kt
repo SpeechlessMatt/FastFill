@@ -44,6 +44,26 @@ class TimeSettingsViewModel : ViewModel() {
         }
     }
 
+    fun showTimePicker(){
+        _state.update { state ->
+            state.copy(
+                isShowTimePicker = true
+            )
+        }
+    }
+
+    fun closeTimePicker(){
+        _state.update { state ->
+            state.copy(
+                isShowTimePicker = false
+            )
+        }
+    }
+
+    fun selectTime(){
+        closeTimePicker()
+    }
+
     fun setOneTimeAlarm(context: Context) {
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (!am.canScheduleExactAlarms()) {

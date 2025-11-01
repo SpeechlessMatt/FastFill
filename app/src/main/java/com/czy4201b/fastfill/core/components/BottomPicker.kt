@@ -5,47 +5,123 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 
 @Composable
 fun <T> BottomPicker(
-    shouldShowImagePicker: Boolean,
+    shouldShow: Boolean,
     onResultNull: () -> Unit,
-    onResult: (T) -> Unit,
-    modifier: Modifier = Modifier
-){
-    if (shouldShowImagePicker) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.2f))
-                .clickable(
-                    // 关掉点击动画
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = {
-                        onResultNull()
+    onResult: (List<T>) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(8.dp),
+    properties: BottomPickerProperties = BottomPickerProperties(),
+    block: BottomPickerScope<T>.() -> Unit
+) {
+    if (shouldShow){
+        Dialog(
+            onDismissRequest = onResultNull,
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,   // 让宽度全屏
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true
+            )
+        ) {
+            val scope = remember { BottomPickerScope<T>(properties) }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        onClick = onResultNull,
+                        indication = null,
+                        interactionSource = null
+                    )
+            ) {
+                AnimatedVisibility(
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    visible = shouldShow,
+                    enter = slideInVertically { fullHeight -> fullHeight }   // 从 fullHeight → 0
+                            + fadeIn(initialAlpha = 0.3f),                   // 淡入
+                    exit = slideOutVertically { fullHeight -> fullHeight }  // 从 0 → fullHeight
+                            + fadeOut()
+                ) {
+                    Surface(
+                        modifier = modifier.clickable(
+                            onClick = { },
+                            indication = null,
+                            interactionSource = null
+                        ),
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(20.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(contentPadding),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Box {
+                                scope.block()
+                                scope.Build()
+                            }
+
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                thickness = 1.dp
+                            )
+
+                            Spacer(Modifier.height(4.dp))
+
+                            Row(
+                                modifier = Modifier.padding(horizontal = 24.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                ModernDefaultOutlinedButton(
+                                    modifier = Modifier.widthIn(min = 130.dp),
+                                    onClick = onResultNull
+                                ) {
+                                    Text("取消")
+                                }
+                                Spacer(Modifier.weight(1f))
+                                ModernDefaultFilledButton(
+                                    modifier = Modifier.widthIn(min = 130.dp),
+                                    onClick = {
+                                        scope.resultValues?.let { onResult(it) } ?: onResultNull()
+                                    }
+                                ) {
+                                    Text("确定")
+                                }
+                            }
+                        }
                     }
-                )
-        )
-    }
-
-    AnimatedVisibility(
-        visible = shouldShowImagePicker,
-        enter = slideInVertically { fullHeight -> fullHeight }   // 从 fullHeight → 0
-                + fadeIn(initialAlpha = 0.3f),                   // 淡入
-        exit = slideOutVertically { fullHeight -> fullHeight }  // 从 0 → fullHeight
-                + fadeOut()
-    ) {
-
+                }
+            }
+        }
     }
 }
 
