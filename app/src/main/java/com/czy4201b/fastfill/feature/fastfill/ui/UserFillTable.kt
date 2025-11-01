@@ -63,6 +63,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.czy4201b.fastfill.R
+import com.czy4201b.fastfill.core.components.ModernDefaultFilledButton
+import com.czy4201b.fastfill.core.components.ModernDefaultOutlinedButton
 import com.czy4201b.fastfill.core.theme.DarkCustomBackground
 import com.czy4201b.fastfill.core.theme.DarkHazeStyle
 import com.czy4201b.fastfill.core.theme.LightCustomBackground
@@ -471,39 +473,29 @@ fun UserFillTable(
 
                     Spacer(Modifier.height(12.dp))
 
-                    Button(
+                    ModernDefaultOutlinedButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally),
                         onClick = {
                             vm.closeEditView()
                         },
-                        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        ),
                     ) {
                         Text("取消", modifier = Modifier.padding(horizontal = 8.dp))
                     }
 
                     Spacer(Modifier.height(4.dp))
 
-                    Button(
+                    ModernDefaultFilledButton(
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally),
                         onClick = {
                             vm.saveAll()
                         },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
                     ) {
                         Text("保存", modifier = Modifier.padding(horizontal = 8.dp))
                     }
-
                 }
             }
         }
