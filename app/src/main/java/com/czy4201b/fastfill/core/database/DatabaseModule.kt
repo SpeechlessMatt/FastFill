@@ -2,7 +2,7 @@ package com.czy4201b.fastfill.core.database
 
 import android.content.Context
 import androidx.room.Room
-import com.czy4201b.fastfill.feature.fastfill.data.TableDao
+import com.czy4201b.fastfill.feature.fastfill.data.db.TableDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -53,7 +53,6 @@ fun ModernFilledButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .height(48.dp)
             .shadow(
                 elevation = if (enabled) 2.dp else 0.dp,
                 shape = RoundedCornerShape(8.dp)
@@ -79,8 +78,7 @@ fun ModernOutlinedButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
-            .height(48.dp),
+        modifier = modifier,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Companion.Transparent,

@@ -1,5 +1,6 @@
 package com.czy4201b.fastfill.core.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -66,11 +67,8 @@ class BottomPickerScope<T>(
     internal val resultValues: List<T>?
         get() {
             selectedValues.filterNotNull().let { list ->
-                if (list.size == selectedValues.size) {
-                    return list
-                }
+                return list
             }
-            return null
         }
 
 // 这种方式确实很好玩，但是暂时不需要呢

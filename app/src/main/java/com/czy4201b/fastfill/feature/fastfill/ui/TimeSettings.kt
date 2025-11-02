@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.czy4201b.fastfill.core.components.BottomPicker
 import com.czy4201b.fastfill.core.components.BottomPickerProperties
+import com.czy4201b.fastfill.core.components.ModernDefaultOutlinedButton
+import com.czy4201b.fastfill.core.components.ModernOutlinedButton
 import com.czy4201b.fastfill.core.components.ModernSwitch
 import com.czy4201b.fastfill.core.permission.rememberExactAlarmLauncher
 import com.czy4201b.fastfill.core.theme.DarkCustomBackground
@@ -85,7 +88,12 @@ fun TimeSettings(
         Column(
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 16.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .clickable(
+                    onClick = {
+
+                    }
+                ),
         ) {
             Text(
                 text = "时间设置",
@@ -130,23 +138,46 @@ fun TimeSettings(
             AnimatedVisibility(
                 visible = uiState.isStartTimeEnable
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = "开始时间",
-                        modifier = Modifier.weight(1f),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Button(
-                        onClick = {
-                            vm.showTimePicker()
-                        }
+                Column {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text("设置")
+                        Text(
+                            text = "开始时间",
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Medium
+                        )
+                        ModernOutlinedButton(
+                            onClick = {
+                                vm.showTimePicker()
+                            }
+                        ) {
+                            Text(uiState.timeSettings, color = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = "提前进入网站等待",
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Medium
+                        )
+
+                        ModernSwitch(
+                            modifier = Modifier,
+                            checked = uiState.isWaitForStart,
+                            onCheckedChange = { enable ->
+                                vm.setWaitForStartEnable(enable)
+                            },
+                        )
                     }
                 }
             }
@@ -156,21 +187,21 @@ fun TimeSettings(
     BottomPicker(
         shouldShow = uiState.isShowTimePicker,
         onResultNull = { vm.closeTimePicker() },
-        onResult = { vm.selectTime() },
+        onResult = { vm.selectTime(it) },
         modifier = Modifier,
-        title = "请选择时间:",
-        titlePadding = PaddingValues(start = 10.dp, top = 4.dp),
-        titleTextStyle = MaterialTheme.typography.bodyLarge.copy(
+        title = "- 选择开始时间 -",
+        titlePadding = PaddingValues(0.dp),
+        titleTextStyle = MaterialTheme.typography.titleMedium.copy(
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurface,
         ),
         properties = BottomPickerProperties(
             pickerHeight = 150.dp,
             pickerBarHeight = 27.dp,
             pickerPadding = PaddingValues(start = 10.dp, end = 10.dp, bottom = 10.dp),
             pickerTitleTextStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold),
-            pickerTitlePadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
-            pickerContentPadding = PaddingValues(horizontal = 10.dp),
+            pickerTitlePadding = PaddingValues(start = 40.dp, top = 8.dp, bottom = 8.dp),
+            pickerContentPadding = PaddingValues(start = 40.dp),
             pickerHorizontalArrangement = Arrangement.spacedBy(10.dp)
         ),
     ) {

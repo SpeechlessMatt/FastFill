@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.czy4201b.fastfill.R
+import com.czy4201b.fastfill.core.components.ErrorPage
 import com.czy4201b.fastfill.core.components.ModernFilledButton
 import com.czy4201b.fastfill.core.components.ModernOutlinedButton
 import com.czy4201b.fastfill.core.components.SnackBar
@@ -40,169 +41,172 @@ fun MainView(
 ) {
     val uiState by vm.state.collectAsState()
 
-    LaunchedEffect(Unit) {
-        vm.apply {
-            checkLogin(TxDocFill)
+    uiState.currentFastFillJS?.let { currentFastFillJS ->
+        if (uiState.isShowLoginWeb) {
+            // 全屏 WebView，带返回键处理
+            WebLoginScreen(
+                modifier = Modifier.fillMaxSize(),
+                fastFillJS = currentFastFillJS,
+                onBack = { vm.closeLoginWeb() }
+            )
         }
-    }
 
-    if (uiState.isShowLoginWeb) {
-        // 全屏 WebView，带返回键处理
-        WebLoginScreen(
-            modifier = Modifier.fillMaxSize(),
-            fastFillJS = TxDocFill,
-            onBack = { vm.closeLoginWeb() }
-        )
-    }
+        // 这里需要修改
+        if (uiState.isStartFilling) {
+            HiddenFilledTableWebView(
+                modifier = Modifier.fillMaxSize(),
+                url = uiState.url,
+                fastFillJS = currentFastFillJS,
+                fillData = userFillTableViewModel.userFillMap,
+                onBack = { vm.endFilling() },
+                startDate = Calendar.getInstance().apply { // 这里需要修改
+                    add(Calendar.YEAR, 10) // 这里需要修改
+                }.time // 这里需要修改
+            )
+        }
 
-    // 这里需要修改
-    if (uiState.isStartFilling) {
-        HiddenFilledTableWebView(
-            modifier = Modifier.fillMaxSize(),
-            url = uiState.url,
-            fastFillJS = TxDocFill,
-            fillData = userFillTableViewModel.userFillMap,
-            onBack = { vm.endFilling() },
-            startDate = Calendar.getInstance().apply { // 这里需要修改
-                add(Calendar.YEAR, 10) // 这里需要修改
-            }.time // 这里需要修改
-        )
-    }
-
-    if (!uiState.isShowLoginWeb && !uiState.isStartFilling) {
-        Scaffold(
-            modifier = modifier.fillMaxSize(),
-            topBar = {
-                Row(
-                    modifier = Modifier.Companion.padding(
-                        16.dp,
-                        top = 38.dp,
-                        bottom = 10.dp
-                    )
-                ) {
-                    Text(
-                        text = "FastFill",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontFamily = FontFamily.Companion.Serif
-                    )
-                }
-            }
-        ) { innerPadding ->
-            Column(
-                modifier = modifier.padding(innerPadding)
-            ) {
-                URLTextField(
-                    value = uiState.url,
-                    isError = uiState.isUrlInvalid,
-                    onValueChange = { vm.updateUrl(it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp), // 遵循设计规范 8.dp
-                    maxLines = 3
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.txdocs),
-                        contentDescription = null,
-                        modifier = Modifier.size(25.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                }
-
-                AnimatedVisibility(uiState.loginMap[TxDocFill] == false) {
-                    // 登录按钮
-                    ModernOutlinedButton(
-                        onClick = {
-                            vm.showLoginWeb()
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
+        if (!uiState.isShowLoginWeb && !uiState.isStartFilling) {
+            Scaffold(
+                modifier = modifier.fillMaxSize(),
+                topBar = {
+                    Row(
+                        modifier = Modifier.Companion.padding(
+                            16.dp,
+                            top = 38.dp,
+                            bottom = 10.dp
+                        )
                     ) {
-                        Text("登录", color = MaterialTheme.colorScheme.primary)
+                        Text(
+                            text = "FastFill",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontFamily = FontFamily.Companion.Serif
+                        )
                     }
                 }
-
-                AnimatedVisibility(uiState.isUrlInvalid) {
-                    SnackBar(
-                        "该URL非目标域名",
+            ) { innerPadding ->
+                Column(
+                    modifier = modifier.padding(innerPadding)
+                ) {
+                    URLTextField(
+                        value = uiState.url,
+                        isError = uiState.isUrlInvalid,
+                        onValueChange = { vm.updateUrl(it) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
-                        buttonText = "清除",
-                        onButtonClicked = {
-                            vm.clearUrl()
+                            .padding(8.dp), // 遵循设计规范 8.dp
+                        maxLines = 3
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.txdocs),
+                            contentDescription = null,
+                            modifier = Modifier.size(25.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+
+                    AnimatedVisibility(!uiState.isCurrentLogin) {
+                        // 登录按钮
+                        ModernOutlinedButton(
+                            onClick = {
+                                vm.showLoginWeb()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .height(48.dp)
+                        ) {
+                            Text("登录", color = MaterialTheme.colorScheme.primary)
                         }
-                    )
-                }
+                    }
 
-                // 开始填入按钮
-                ModernFilledButton(
-                    onClick = {
-                        vm.startFilling(TxDocFill)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp), // 遵循设计规范 8.dp
-                    enabled = uiState.loginMap[TxDocFill] == true
-                ) {
-                    Text("开始自动化填入", color = MaterialTheme.colorScheme.onPrimary)
-                }
+                    AnimatedVisibility(uiState.isUrlInvalid) {
+                        SnackBar(
+                            "该URL非目标域名",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            buttonText = "清除",
+                            onButtonClicked = {
+                                vm.clearUrl()
+                            }
+                        )
+                    }
 
-                // 退出登录按钮
-                AnimatedVisibility(uiState.loginMap[TxDocFill] == true) {
-                    ModernOutlinedButton(
+                    // 开始填入按钮
+                    ModernFilledButton(
                         onClick = {
-                            vm.showLoginWeb()
+                            vm.startFilling()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp) // 遵循设计规范 8.dp
+                            .height(48.dp),
+                        enabled = uiState.isCurrentLogin
                     ) {
-                        Text("退出登录", color = MaterialTheme.colorScheme.primary)
+                        Text("开始自动化填入", color = MaterialTheme.colorScheme.onPrimary)
                     }
-                }
 
-                Spacer(Modifier.height(8.dp))
-
-                TabBar(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .fillMaxWidth(),
-//                    tabList = listOf("数据", "定时", "自定义"),
-                    tabList = listOf("数据", "定时"),
-                    currentTab = uiState.currentTab,
-                    onTabClicked = {
-                        vm.selectTab(it)
-                    }
-                )
-
-                TabPager(
-                    pageCount = 2,
-                    currentPage = uiState.currentTab,
-                ) { page ->
-                    when (page) {
-                        0 -> UserFillTable(
+                    // 退出登录按钮
+                    AnimatedVisibility(uiState.isCurrentLogin) {
+                        ModernOutlinedButton(
+                            onClick = {
+                                vm.showLoginWeb()
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp) // 遵循设计规范 8.dp
-                                .height(400.dp), // 高度未定，再说
-                            vm = userFillTableViewModel
-                        )
+                                .height(48.dp)
+                        ) {
+                            Text("退出登录", color = MaterialTheme.colorScheme.primary)
+                        }
+                    }
 
-                        1 -> TimeSettings(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                                .height(400.dp),
-                            vm = timeSettingsViewModel
-                        )
+                    Spacer(Modifier.height(8.dp))
+
+                    TabBar(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .fillMaxWidth(),
+//                    tabList = listOf("数据", "定时", "自定义"),
+                        tabList = listOf("数据", "定时"),
+                        currentTab = uiState.currentTab,
+                        onTabClicked = {
+                            vm.selectTab(it)
+                        }
+                    )
+
+                    TabPager(
+                        pageCount = 2,
+                        currentPage = uiState.currentTab,
+                    ) { page ->
+                        when (page) {
+                            0 -> UserFillTable(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp) // 遵循设计规范 8.dp
+                                    .height(400.dp), // 高度未定，再说
+                                vm = userFillTableViewModel
+                            )
+
+                            1 -> TimeSettings(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                                    .height(400.dp),
+                                vm = timeSettingsViewModel
+                            )
 //
 //                        2 -> Column {
 //                            Text("99999")
 //                        }
+                        }
                     }
                 }
             }
+        }
+    } ?: run {
+        if (!uiState.isLoading){
+            ErrorPage(message = "- FastFill初始化异常")
         }
     }
 }

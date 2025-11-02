@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.czy4201b.fastfill.FastFillApplication
 import com.czy4201b.fastfill.core.database.AppDb
-import com.czy4201b.fastfill.feature.fastfill.data.TableDao
-import com.czy4201b.fastfill.feature.fastfill.data.TableMeta
-import com.czy4201b.fastfill.feature.fastfill.data.TableRow
+import com.czy4201b.fastfill.feature.fastfill.data.db.TableDao
+import com.czy4201b.fastfill.feature.fastfill.data.db.TableMeta
+import com.czy4201b.fastfill.feature.fastfill.data.db.TableRow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

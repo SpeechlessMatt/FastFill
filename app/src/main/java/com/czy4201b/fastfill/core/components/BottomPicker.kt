@@ -1,5 +1,6 @@
 package com.czy4201b.fastfill.core.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -92,7 +93,6 @@ fun <T> BottomPicker(
                         ) {
                             Text(
                                 modifier = Modifier
-                                    .align(Alignment.Start)
                                     .padding(titlePadding),
                                 text = title,
                                 style = titleTextStyle

@@ -5,13 +5,21 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
+import com.czy4201b.fastfill.feature.fastfill.data.repository.LoginRepository
 import com.czy4201b.fastfill.feature.fastfill.notification.AlarmReceiver
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class TimeSettingsViewModel : ViewModel() {
+@HiltViewModel
+class TimeSettingsViewModel @Inject constructor(
+    private val loginRepository: LoginRepository
+) : ViewModel() {
+    val loginState = loginRepository.loginState
+
     private val _state = MutableStateFlow(TimeSettingsUiState())
     val state: StateFlow<TimeSettingsUiState> = _state.asStateFlow()
 
@@ -22,9 +30,16 @@ class TimeSettingsViewModel : ViewModel() {
             return
         }
         _state.update { state ->
-            state.copy(
-                isStartTimeEnable = isEnable
-            )
+            if (!isEnable) {
+                state.copy(
+                    isStartTimeEnable = false,
+                    timeSettings = "未设置"
+                )
+            } else {
+                state.copy(
+                    isStartTimeEnable = true
+                )
+            }
         }
     }
 
@@ -60,8 +75,42 @@ class TimeSettingsViewModel : ViewModel() {
         }
     }
 
-    fun selectTime(){
+    fun selectTime(time: List<Int>){
+        val hour = time[0]
+        val minute = time[1]
+        val second = time[2]
+
+        val now = java.time.LocalDateTime.now()
+        val currentHour = now.hour
+        val currentMinute = now.minute
+        val currentSecond = now.second
+
+        // 比较时间（只比较时分秒）
+        val inputTimeSeconds = hour * 3600 + minute * 60 + second
+        val currentTimeSeconds = currentHour * 3600 + currentMinute * 60 + currentSecond
+
+        when {
+            inputTimeSeconds > currentTimeSeconds -> _state.update { state ->
+                state.copy(
+                    timeSettings = "今日 ${hour}点${minute}分${second}秒"
+                )
+            }
+            else -> _state.update { state ->
+                state.copy(
+                    timeSettings = "明日 ${hour}点${minute}分${second}秒"
+                )
+            }
+        }
+
         closeTimePicker()
+    }
+
+    fun setWaitForStartEnable(isEnable: Boolean) {
+        _state.update { state ->
+            state.copy(
+                isWaitForStart = isEnable
+            )
+        }
     }
 
     fun setOneTimeAlarm(context: Context) {
@@ -77,5 +126,9 @@ class TimeSettingsViewModel : ViewModel() {
         )
         val trigger = System.currentTimeMillis() + 5000
         am.setExact(AlarmManager.RTC_WAKEUP, trigger, pending)
+    }
+
+    fun bindMainViewModel(){
+
     }
 }
