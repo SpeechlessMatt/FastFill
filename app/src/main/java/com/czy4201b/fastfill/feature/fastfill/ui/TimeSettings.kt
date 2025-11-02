@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.czy4201b.fastfill.core.components.BottomPicker
 import com.czy4201b.fastfill.core.components.BottomPickerProperties
-import com.czy4201b.fastfill.core.components.ModernDefaultOutlinedButton
 import com.czy4201b.fastfill.core.components.ModernOutlinedButton
 import com.czy4201b.fastfill.core.components.ModernSwitch
 import com.czy4201b.fastfill.core.permission.rememberExactAlarmLauncher

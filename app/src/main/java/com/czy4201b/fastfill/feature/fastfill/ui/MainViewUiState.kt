@@ -6,7 +6,6 @@ data class MainViewUiState(
     val currentFastFillJS: FastFillJS? = null,
     val isCurrentLogin: Boolean = false,
     val allLoginMap: Map<FastFillJS, Boolean> = emptyMap(),
-    val isLoading: Boolean = true,
     val url: String = "",
     val currentTab: Int = 0,
     val isShowLoginWeb: Boolean = false,

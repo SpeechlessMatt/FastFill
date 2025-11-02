@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,7 +27,6 @@ import com.czy4201b.fastfill.core.components.ErrorPage
 import com.czy4201b.fastfill.core.components.ModernFilledButton
 import com.czy4201b.fastfill.core.components.ModernOutlinedButton
 import com.czy4201b.fastfill.core.components.SnackBar
-import com.czy4201b.fastfill.feature.fastfill.javaScripts.impl.TxDocFill
 import com.czy4201b.fastfill.feature.fastfill.web.HiddenFilledTableWebView
 import com.czy4201b.fastfill.feature.fastfill.web.WebLoginScreen
 
@@ -64,149 +62,149 @@ fun MainView(
                 }.time // 这里需要修改
             )
         }
+    } ?: run {
+        if (uiState.isShowLoginWeb || uiState.isStartFilling){
+            ErrorPage("- fastFillJS数据为null")
+        }
+    }
 
-        if (!uiState.isShowLoginWeb && !uiState.isStartFilling) {
-            Scaffold(
-                modifier = modifier.fillMaxSize(),
-                topBar = {
-                    Row(
-                        modifier = Modifier.Companion.padding(
-                            16.dp,
-                            top = 38.dp,
-                            bottom = 10.dp
-                        )
-                    ) {
-                        Text(
-                            text = "FastFill",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontFamily = FontFamily.Companion.Serif
-                        )
-                    }
-                }
-            ) { innerPadding ->
-                Column(
-                    modifier = modifier.padding(innerPadding)
+    if (!uiState.isShowLoginWeb && !uiState.isStartFilling) {
+        Scaffold(
+            modifier = modifier.fillMaxSize(),
+            topBar = {
+                Row(
+                    modifier = Modifier.Companion.padding(
+                        16.dp,
+                        top = 38.dp,
+                        bottom = 10.dp
+                    )
                 ) {
-                    URLTextField(
-                        value = uiState.url,
-                        isError = uiState.isUrlInvalid,
-                        onValueChange = { vm.updateUrl(it) },
+                    Text(
+                        text = "FastFill",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontFamily = FontFamily.Companion.Serif
+                    )
+                }
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = modifier.padding(innerPadding)
+            ) {
+                URLTextField(
+                    value = uiState.url,
+                    isError = uiState.isUrlInvalid,
+                    onValueChange = { vm.updateUrl(it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp), // 遵循设计规范 8.dp
+                    maxLines = 3
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.txdocs),
+                        contentDescription = null,
+                        modifier = Modifier.size(25.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+
+                AnimatedVisibility(!uiState.isCurrentLogin) {
+                    // 登录按钮
+                    ModernOutlinedButton(
+                        onClick = {
+                            vm.showLoginWeb()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp), // 遵循设计规范 8.dp
-                        maxLines = 3
+                            .padding(8.dp)
+                            .height(48.dp)
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.txdocs),
-                            contentDescription = null,
-                            modifier = Modifier.size(25.dp),
-                            contentScale = ContentScale.Fit
-                        )
+                        Text("登录", color = MaterialTheme.colorScheme.primary)
                     }
+                }
 
-                    AnimatedVisibility(!uiState.isCurrentLogin) {
-                        // 登录按钮
-                        ModernOutlinedButton(
-                            onClick = {
-                                vm.showLoginWeb()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                                .height(48.dp)
-                        ) {
-                            Text("登录", color = MaterialTheme.colorScheme.primary)
+                AnimatedVisibility(uiState.isUrlInvalid) {
+                    SnackBar(
+                        "该URL非目标域名",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        buttonText = "清除",
+                        onButtonClicked = {
+                            vm.clearUrl()
                         }
-                    }
+                    )
+                }
 
-                    AnimatedVisibility(uiState.isUrlInvalid) {
-                        SnackBar(
-                            "该URL非目标域名",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            buttonText = "清除",
-                            onButtonClicked = {
-                                vm.clearUrl()
-                            }
-                        )
-                    }
+                // 开始填入按钮
+                ModernFilledButton(
+                    onClick = {
+                        vm.startFilling()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp) // 遵循设计规范 8.dp
+                        .height(48.dp),
+                    enabled = uiState.isCurrentLogin
+                ) {
+                    Text("开始自动化填入", color = MaterialTheme.colorScheme.onPrimary)
+                }
 
-                    // 开始填入按钮
-                    ModernFilledButton(
+                // 退出登录按钮
+                AnimatedVisibility(uiState.isCurrentLogin) {
+                    ModernOutlinedButton(
                         onClick = {
-                            vm.startFilling()
+                            vm.showLoginWeb()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp) // 遵循设计规范 8.dp
-                            .height(48.dp),
-                        enabled = uiState.isCurrentLogin
+                            .height(48.dp)
                     ) {
-                        Text("开始自动化填入", color = MaterialTheme.colorScheme.onPrimary)
+                        Text("退出登录", color = MaterialTheme.colorScheme.primary)
                     }
+                }
 
-                    // 退出登录按钮
-                    AnimatedVisibility(uiState.isCurrentLogin) {
-                        ModernOutlinedButton(
-                            onClick = {
-                                vm.showLoginWeb()
-                            },
+                Spacer(Modifier.height(8.dp))
+
+                TabBar(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .fillMaxWidth(),
+//                    tabList = listOf("数据", "定时", "自定义"),
+                    tabList = listOf("数据", "定时"),
+                    currentTab = uiState.currentTab,
+                    onTabClicked = {
+                        vm.selectTab(it)
+                    }
+                )
+
+                TabPager(
+                    pageCount = 2,
+                    currentPage = uiState.currentTab,
+                ) { page ->
+                    when (page) {
+                        0 -> UserFillTable(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp) // 遵循设计规范 8.dp
-                                .height(48.dp)
-                        ) {
-                            Text("退出登录", color = MaterialTheme.colorScheme.primary)
-                        }
-                    }
+                                .height(400.dp), // 高度未定，再说
+                            vm = userFillTableViewModel
+                        )
 
-                    Spacer(Modifier.height(8.dp))
-
-                    TabBar(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .fillMaxWidth(),
-//                    tabList = listOf("数据", "定时", "自定义"),
-                        tabList = listOf("数据", "定时"),
-                        currentTab = uiState.currentTab,
-                        onTabClicked = {
-                            vm.selectTab(it)
-                        }
-                    )
-
-                    TabPager(
-                        pageCount = 2,
-                        currentPage = uiState.currentTab,
-                    ) { page ->
-                        when (page) {
-                            0 -> UserFillTable(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp) // 遵循设计规范 8.dp
-                                    .height(400.dp), // 高度未定，再说
-                                vm = userFillTableViewModel
-                            )
-
-                            1 -> TimeSettings(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp)
-                                    .height(400.dp),
-                                vm = timeSettingsViewModel
-                            )
+                        1 -> TimeSettings(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .height(400.dp),
+                            vm = timeSettingsViewModel
+                        )
 //
 //                        2 -> Column {
 //                            Text("99999")
 //                        }
-                        }
                     }
                 }
             }
-        }
-    } ?: run {
-        if (!uiState.isLoading){
-            ErrorPage(message = "- FastFill初始化异常")
         }
     }
 }

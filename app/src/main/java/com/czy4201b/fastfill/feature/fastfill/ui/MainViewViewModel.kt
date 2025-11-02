@@ -3,8 +3,6 @@ package com.czy4201b.fastfill.feature.fastfill.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.czy4201b.fastfill.feature.fastfill.data.repository.LoginRepository
-import com.czy4201b.fastfill.feature.fastfill.data.state.FastFillConfigState
 import com.czy4201b.fastfill.feature.fastfill.data.state.FastFillStateContainer
 import com.czy4201b.fastfill.feature.fastfill.javaScripts.FastFillJS
 import com.czy4201b.fastfill.feature.fastfill.javaScripts.impl.TxDocFill
@@ -13,13 +11,9 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlin.String
 
 @HiltViewModel
 class MainViewViewModel @Inject constructor(
@@ -28,7 +22,6 @@ class MainViewViewModel @Inject constructor(
 
     // 在同一个文件中定义相关的数据类
     private data class MainViewLocalState(
-        val isLoading: Boolean = true,
         val url: String = "",
         val currentTab: Int = 0,
         val isShowLoginWeb: Boolean = false,
@@ -46,7 +39,6 @@ class MainViewViewModel @Inject constructor(
             currentFastFillJS = configState.currentFastFillJS,
             isCurrentLogin = configState.isCurrentLogin,
             allLoginMap = configState.allLoginMap,
-            isLoading = localState.isLoading,
             url = localState.url,
             currentTab = localState.currentTab,
             isShowLoginWeb = localState.isShowLoginWeb,
