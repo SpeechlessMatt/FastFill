@@ -1,6 +1,5 @@
 package com.czy4201b.fastfill.feature.fastfill.ui
 
-import android.icu.util.Calendar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -55,11 +54,8 @@ fun MainView(
                 modifier = Modifier.fillMaxSize(),
                 url = uiState.url,
                 fastFillJS = currentFastFillJS,
-                fillData = userFillTableViewModel.userFillMap,
+                fillMap = userFillTableViewModel.userFillMap,
                 onBack = { vm.endFilling() },
-                startDate = Calendar.getInstance().apply { // 这里需要修改
-                    add(Calendar.YEAR, 10) // 这里需要修改
-                }.time // 这里需要修改
             )
         }
     } ?: run {
@@ -73,7 +69,7 @@ fun MainView(
             modifier = modifier.fillMaxSize(),
             topBar = {
                 Row(
-                    modifier = Modifier.Companion.padding(
+                    modifier = Modifier.padding(
                         16.dp,
                         top = 38.dp,
                         bottom = 10.dp
@@ -82,7 +78,7 @@ fun MainView(
                     Text(
                         text = "FastFill",
                         style = MaterialTheme.typography.titleLarge,
-                        fontFamily = FontFamily.Companion.Serif
+                        fontFamily = FontFamily.Serif
                     )
                 }
             }

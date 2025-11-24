@@ -13,17 +13,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import com.czy4201b.fastfill.feature.fastfill.javaScripts.ExtraData
 import com.czy4201b.fastfill.feature.fastfill.javaScripts.FastFillJS
-import java.util.Date
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun HiddenFilledTableWebView(
     modifier: Modifier = Modifier,
-    startDate: Date? = null,
     url: String,
     fastFillJS: FastFillJS,
-    fillData: Map<String, String>,
+    fillMap: Map<String, String>,
+    extraMap: Map<Any, Any> = emptyMap(),
     onBack: () -> Unit
 //    onDone: (Bitmap) -> Unit
 ) {
@@ -55,22 +55,7 @@ fun HiddenFilledTableWebView(
 
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String?) {
-                    startDate?.let {
-                        // 加载脚本
-                        view.evaluateJavascript(
-                            fastFillJS.disableTimeCheckAction(
-                                toDate = it
-                            )
-                        ) { _ ->
-
-                        }
-                    }
-                    // 加载脚本
-                    view.evaluateJavascript(
-                        fastFillJS.fillAction(targetMap = fillData)
-                    ) { _ ->
-                        // 先啥都不写
-                    }
+                    fastFillJS.fillAction(this@apply, url, ExtraData(fillMap, extraMap))
                 }
             }
         }

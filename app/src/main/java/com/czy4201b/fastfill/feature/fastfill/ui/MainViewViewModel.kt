@@ -77,7 +77,6 @@ class MainViewViewModel @Inject constructor(
     }
 
     private fun exitLogin(fastFillJS: FastFillJS) {
-        fastFillJS.exitLogin()
         checkLogin(fastFillJS)
     }
 

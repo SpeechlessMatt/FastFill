@@ -64,7 +64,7 @@ class BottomPickerScope<T>(
     // 每列的当前选中值
     internal val selectedValues = mutableStateListOf<T?>()
 
-    internal val resultValues: List<T>?
+    internal val resultValues: List<T>
         get() {
             selectedValues.filterNotNull().let { list ->
                 return list

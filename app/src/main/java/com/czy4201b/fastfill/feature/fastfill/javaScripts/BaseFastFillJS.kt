@@ -6,9 +6,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.Date
 
 abstract class BaseFastFillJS : FastFillJS {
+    abstract val checkAuthProbe: String
+
     override suspend fun checkLogin(): Boolean = withContext(Dispatchers.IO) {
         val cookie = CookieManager.getInstance().getCookie(domain) ?: return@withContext false
         val desktopUA =
@@ -21,25 +22,4 @@ abstract class BaseFastFillJS : FastFillJS {
         Log.d("network", "responseCode: ${conn.responseCode}")
         conn.responseCode in 200..299
     }
-
-    override fun disableTimeCheckAction(toDate: Date): String {
-        val targetTs = toDate.time                   // Kotlin Date → 时间戳
-        return """
-        (function(){
-            const RealDate = Date;
-            const offset = $targetTs - RealDate.now();   // 直接算差值
-            function FakeDate(...a){
-                return a.length ? new RealDate(...a) : new RealDate(RealDate.now() + offset);
-            }
-            Object.setPrototypeOf(FakeDate, RealDate);
-            FakeDate.prototype = RealDate.prototype;
-            FakeDate.now = () => RealDate.now() + offset;
-            FakeDate.parse = RealDate.parse;
-            FakeDate.UTC   = RealDate.UTC;
-            window.Date = FakeDate;
-        })();
-    """.trimIndent()
-    }
-
-    override fun exitLogin() = Unit
 }

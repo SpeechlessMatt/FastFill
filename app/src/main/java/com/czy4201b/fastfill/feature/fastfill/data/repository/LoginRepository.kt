@@ -34,7 +34,6 @@ class LoginRepository @Inject constructor() {
     }
 
     suspend fun logout(fastFillJS: FastFillJS) {
-        fastFillJS.exitLogin()
         checkLogin(fastFillJS)
     }
 }
