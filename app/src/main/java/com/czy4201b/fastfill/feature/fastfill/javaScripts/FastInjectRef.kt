@@ -84,50 +84,42 @@ fun ElementsRef.forEachIndexed(block: ElementsRef.(ElementRef, ValueRef) -> Unit
  */
 fun ElementRef.simulateInput(textRef: ValueRef) {
     owner.jsFunc += """
-            (function() {
-                const el = ${this.varName};
-                if (!el) {
-                    console.error('[FastInject] Element ${this.varName} does not exist in JS context!');
-                }
+        (function() {
+            const el = ${this.varName};
+            if (!el) {
+                console.error('[FastInject] Element ${this.varName} does not exist in JS context!');
+                return;
+            }
+            
+            (function (el, value) {
+                if (!el) return;
     
-                (function(el, text) {
-                    // 1. 聚焦并清空
-                    el.focus();
-                    el.value = '';
-                    el.setAttribute('value', '');
-                    el.dispatchEvent(new Event('input', { bubbles: true }));
-                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                el.focus(); // 保证组件内部 focus 逻辑生效
     
-                    // 2. 逐字符模拟输入
-                    for (var i = 0; i < text.length; i++) {
-                        var ch = text.charAt(i);
+                // 清空并准备 tracker
+                const lastValue = el.value;
+                el.value = '';
     
-                        var keyEvent = new KeyboardEvent('keydown', {
-                            key: ch,
-                            code: 'Key' + ch.toUpperCase(),
-                            keyCode: ch.charCodeAt(0),
-                            which: ch.charCodeAt(0),
-                            bubbles: true,
-                            cancelable: true
-                        });
-                        el.dispatchEvent(keyEvent);
+                const tracker = el._valueTracker;
+                if (tracker) tracker.setValue(lastValue);
     
-                        el.value += ch;
-                        el.setAttribute('value', el.value);
-                        el.dispatchEvent(new Event('input', { bubbles: true }));
-                    }
+                // 模拟中文输入（IME）
+                el.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true, composed: true }));
     
-                    // 3. 失焦/校验
-                    el.dispatchEvent(new Event('change', { bubbles: true }));
-                    el.blur();
-                    el.dispatchEvent(new Event('blur', { bubbles: true }));
+                // 填入值
+                el.value = value;
     
-                    var fakeEvent = new Event('change', { bubbles: true });
-                    Object.defineProperty(fakeEvent, 'target', { value: el, enumerable: true });
-                    el.dispatchEvent(fakeEvent);
-                })(el, ${textRef.varName});
-            })();
-        """.trimIndent()
+                el.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, composed: true, data: value }));
+    
+                // 触发 React/Vue 的 input 事件
+                el.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true, data: value, inputType: 'insertText' }));
+    
+                // 触发 change + blur 保证校验逻辑触发
+                el.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+                el.blur();
+            })(el, ${textRef.varName});
+        })();
+    """.trimIndent()
 }
 
 /**
@@ -138,50 +130,42 @@ fun ElementRef.simulateInput(text: String) {
     val escaped = text.toJsLiteral()
 
     owner.jsFunc += """
-            (function() {
-                const el = ${this.varName};
-                if (!el) {
-                    console.error('[FastInject] Element ${this.varName} does not exist in JS context!');
-                }
+        (function() {
+            const el = ${this.varName};
+            if (!el) {
+                console.error('[FastInject] Element ${this.varName} does not exist in JS context!');
+                return;
+            }
+            
+            (function (el, value) {
+                if (!el) return;
     
-                (function(el, text) {
-                    // 1. 聚焦并清空
-                    el.focus();
-                    el.value = '';
-                    el.setAttribute('value', '');
-                    el.dispatchEvent(new Event('input', { bubbles: true }));
-                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                el.focus(); // 保证组件内部 focus 逻辑生效
     
-                    // 2. 逐字符模拟输入
-                    for (var i = 0; i < text.length; i++) {
-                        var ch = text.charAt(i);
+                // 清空并准备 tracker
+                const lastValue = el.value;
+                el.value = '';
     
-                        var keyEvent = new KeyboardEvent('keydown', {
-                            key: ch,
-                            code: 'Key' + ch.toUpperCase(),
-                            keyCode: ch.charCodeAt(0),
-                            which: ch.charCodeAt(0),
-                            bubbles: true,
-                            cancelable: true
-                        });
-                        el.dispatchEvent(keyEvent);
+                const tracker = el._valueTracker;
+                if (tracker) tracker.setValue(lastValue);
     
-                        el.value += ch;
-                        el.setAttribute('value', el.value);
-                        el.dispatchEvent(new Event('input', { bubbles: true }));
-                    }
+                // 模拟中文输入（IME）
+                el.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true, composed: true }));
     
-                    // 3. 失焦/校验
-                    el.dispatchEvent(new Event('change', { bubbles: true }));
-                    el.blur();
-                    el.dispatchEvent(new Event('blur', { bubbles: true }));
+                // 填入值
+                el.value = value;
     
-                    var fakeEvent = new Event('change', { bubbles: true });
-                    Object.defineProperty(fakeEvent, 'target', { value: el, enumerable: true });
-                    el.dispatchEvent(fakeEvent);
-                })(el, $escaped);
-            })();
-        """.trimIndent()
+                el.dispatchEvent(new CompositionEvent('compositionend', { bubbles: true, composed: true, data: value }));
+    
+                // 触发 React/Vue 的 input 事件
+                el.dispatchEvent(new InputEvent('input', { bubbles: true, composed: true, data: value, inputType: 'insertText' }));
+    
+                // 触发 change + blur 保证校验逻辑触发
+                el.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+                el.blur();
+            })(el, $escaped);
+        })();
+    """.trimIndent()
 }
 
 fun ElementRef.click() {

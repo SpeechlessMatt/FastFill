@@ -297,7 +297,7 @@ class FastInjectScope {
         // 将所有 DSL 收集的 JavaScript 拼成一个脚本
         val finalJs = "(function() {\n${jsFunc.joinToString("\n")}\n})();"
         
-        Log.d("FastInject", finalJs)
+//        Log.d("FastInject", finalJs)
         // 注入进 WebView
         this.evaluateJavascript(finalJs) { result ->
             Log.d("FastInject", "JS executed, result=$result")
