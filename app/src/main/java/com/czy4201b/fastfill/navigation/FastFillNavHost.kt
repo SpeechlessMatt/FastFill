@@ -9,7 +9,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
-import com.czy4201b.fastfill.MainViewModel
 import com.czy4201b.fastfill.core.navigation.Route
 import com.czy4201b.fastfill.feature.fastfill.ui.MainView
 import com.czy4201b.fastfill.feature.update.UpdateViewModel

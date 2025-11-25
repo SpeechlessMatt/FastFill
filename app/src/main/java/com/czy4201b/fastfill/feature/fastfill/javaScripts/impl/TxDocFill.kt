@@ -3,7 +3,6 @@ package com.czy4201b.fastfill.feature.fastfill.javaScripts.impl
 import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebView
-import com.czy4201b.fastfill.feature.fastfill.javaScripts.BaseFastFillJS
 import com.czy4201b.fastfill.feature.fastfill.javaScripts.ExtraData
 import com.czy4201b.fastfill.feature.fastfill.javaScripts.FastFillJS
 import com.czy4201b.fastfill.feature.fastfill.javaScripts.FastInjectScope
@@ -54,6 +53,9 @@ object TxDocFill : FastFillJS {
             webView.fastInject {
                 // 创建js字面量
                 val map = createValueRef(stringMap)
+                waitElement("div.dui-tabs-bar-container > ul > li:nth-child(1)", 15000).then { button ->
+                    button.click()
+                }
                 setTimeOut(ms = 400) {
                     val titles = findAllElement(".question-title span")
                     val areas = findAllElement(".form-ui-component-basic-text textarea")
@@ -81,11 +83,11 @@ object TxDocFill : FastFillJS {
     }
 
     override fun loginAction(webView: WebView) {
-
+        return
     }
 
     override fun exitLoginAction(webView: WebView) {
-
+        return
     }
 
 }

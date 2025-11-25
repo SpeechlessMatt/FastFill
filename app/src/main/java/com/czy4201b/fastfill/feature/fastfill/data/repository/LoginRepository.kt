@@ -21,15 +21,27 @@ class LoginRepository @Inject constructor() {
 
     suspend fun checkAllLogin() {
         _loginState.update { map ->
-            map.mapValues { (js, _) -> js.checkLogin() }
+            map.mapValues { (js, _) ->
+                try {
+                    js.checkLogin()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    false
+                }
+            }
         }
     }
 
     suspend fun checkLogin(fastFillJS: FastFillJS) {
         registerFastFillJS(fastFillJS)
-        val result = fastFillJS.checkLogin()
-        _loginState.update { map ->
-            map + (fastFillJS to result)
+        try {
+            val result = fastFillJS.checkLogin()
+            _loginState.update { map ->
+                map + (fastFillJS to result)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return
         }
     }
 

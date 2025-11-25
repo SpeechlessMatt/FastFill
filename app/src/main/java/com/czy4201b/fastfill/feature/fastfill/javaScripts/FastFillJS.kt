@@ -12,10 +12,17 @@ interface FastFillJS {
     val loginUrl: String
 
     /**
+     * 可选：如果无法实现登录检查可以改成false
+     */
+    val supportsLoginCheck: Boolean get() = true
+
+    /**
      * 检查网站登录状态
      * @return 登录结果，是否已经登录
      */
-    suspend fun checkLogin(): Boolean
+    suspend fun checkLogin(): Boolean {
+        throw UnsupportedOperationException("$name 不支持登录状态检查")
+    }
 
     /**
      * fastfill执行的fillAction
