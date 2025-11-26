@@ -206,7 +206,7 @@ fun UserFillTable(
                                     .clip(RoundedCornerShape(4.dp))
                                     .clickable(
                                         onClick = {
-
+                                            vm.expandTable()
                                         },
                                     ),
                                 painter = painterResource(R.drawable.expand),

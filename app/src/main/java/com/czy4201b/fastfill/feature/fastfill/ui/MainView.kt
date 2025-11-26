@@ -1,8 +1,15 @@
 package com.czy4201b.fastfill.feature.fastfill.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,20 +18,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import com.czy4201b.fastfill.R
 import com.czy4201b.fastfill.core.components.ErrorPage
 import com.czy4201b.fastfill.core.components.ModernFilledButton
@@ -41,6 +55,7 @@ fun MainView(
     vm: MainViewViewModel
 ) {
     val uiState by vm.state.collectAsState()
+    val isUserFillTableExpanded by userFillTableViewModel.expandState.collectAsState()
 
     uiState.currentFastFillJS?.let { currentFastFillJS ->
         if (uiState.isShowLoginWeb) {
@@ -63,8 +78,39 @@ fun MainView(
             )
         }
     } ?: run {
-        if (uiState.isShowLoginWeb || uiState.isStartFilling){
+        if (uiState.isShowLoginWeb || uiState.isStartFilling) {
             ErrorPage("- fastFillJS数据为null")
+        }
+    }
+
+    if (isUserFillTableExpanded) {
+        Popup {
+            val visibleState = remember { MutableTransitionState(false) }
+
+            LaunchedEffect(Unit) {
+                visibleState.targetState = true
+            }
+
+            LaunchedEffect(visibleState.currentState, visibleState.targetState) {
+                if (!visibleState.currentState && !visibleState.targetState) {
+                    userFillTableViewModel.zoomTable()
+                }
+            }
+
+            BackHandler { visibleState.targetState = false }
+
+            AnimatedVisibility(
+                visibleState = visibleState,
+                enter = fadeIn() + scaleIn(initialScale = 0.8f),
+                exit = fadeOut() + scaleOut(targetScale = 0.8f),
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Text("你好吗？")
+                }
+            }
         }
     }
 
@@ -74,10 +120,11 @@ fun MainView(
             topBar = {
                 Row(
                     modifier = Modifier.padding(
-                        16.dp,
+                        start = 12.dp,
                         top = 38.dp,
-                        bottom = 10.dp
-                    )
+                        end = 12.dp
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "FastFill",
@@ -85,15 +132,22 @@ fun MainView(
                         fontFamily = FontFamily.Serif
                     )
                     Spacer(Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = null,
-                        modifier = Modifier.clickable(
-                            onClick = {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .clickable(
+                                onClick = {
 
-                            }
+                                }
+                            )
+                            .padding(5.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = null,
+                            modifier = Modifier
                         )
-                    )
+                    }
                 }
             }
         ) { innerPadding ->

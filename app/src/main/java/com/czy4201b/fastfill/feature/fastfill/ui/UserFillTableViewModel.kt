@@ -24,7 +24,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 class UserFillTableViewModel(
-    private val dao: TableDao = AppDb.Companion.get(FastFillApplication.Companion.instance).tableDao()
+    private val dao: TableDao = AppDb.get(FastFillApplication.instance).tableDao()
 ) : ViewModel() {
 
     // 添加互斥锁，目的很简单防止不应该的并发造成数据库错乱
@@ -35,7 +35,7 @@ class UserFillTableViewModel(
         dao.observeAllMeta()
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.Companion.WhileSubscribed(5000),
+                started = SharingStarted.WhileSubscribed(5000),
                 initialValue = emptyList()
             )
 
@@ -49,13 +49,16 @@ class UserFillTableViewModel(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.Companion.WhileSubscribed(5000),
+                started = SharingStarted.WhileSubscribed(5000),
                 initialValue = emptyList()
             )
 
     // 加载状态
 //    private val _tableLoadingState = MutableStateFlow<DataLoadingState>(DataLoadingState.Idle)
 //    val tableLoadingState: StateFlow<DataLoadingState> = _tableLoadingState.asStateFlow()
+
+    private val _expandState = MutableStateFlow(false)
+    val expandState: StateFlow<Boolean> = _expandState.asStateFlow()
 
     // 定义ui状态
     private val _state = MutableStateFlow(UserFillViewUiState())
@@ -172,6 +175,14 @@ class UserFillTableViewModel(
     }
 
     /* ui处理部分 */
+    fun expandTable() {
+        _expandState.value = true
+    }
+
+    fun zoomTable() {
+        _expandState.value = false
+    }
+
     fun addRow() {
         val tableId = _currentMeta.value?.tableId ?: return
         _state.update { state ->
