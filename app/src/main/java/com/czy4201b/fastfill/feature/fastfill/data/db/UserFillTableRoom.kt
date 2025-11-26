@@ -42,7 +42,7 @@ data class TableMeta(
         entity = TableMeta::class,
         parentColumns = ["table_id"],
         childColumns = ["table_id"],
-        onDelete = ForeignKey.Companion.CASCADE
+        onDelete = ForeignKey.CASCADE
     )],
     indices = [
         Index("table_id"),
@@ -81,7 +81,7 @@ interface TableDao {
     @Query("SELECT * FROM table_meta WHERE table_id = :tableId")
     suspend fun getMetaById(tableId: String): TableMeta?
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMeta(meta: TableMeta)
 
     @Query("DELETE FROM table_meta WHERE table_id = :tableId")
@@ -104,10 +104,10 @@ interface TableDao {
     @Query("SELECT * FROM table_row WHERE table_id = :tableId AND row_key = :key")
     suspend fun getRowByKey(tableId: String, key: String): TableRow?
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRow(row: TableRow)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRows(list: List<TableRow>)
 
     @Query("DELETE FROM table_row WHERE table_id = :tableId")

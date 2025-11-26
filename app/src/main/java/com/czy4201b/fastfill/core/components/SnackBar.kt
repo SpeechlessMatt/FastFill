@@ -28,8 +28,8 @@ fun SnackBar(
         shadowElevation = 8.dp
     ) {
         Row(
-            modifier = Modifier.Companion.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.Companion.CenterVertically
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 message,
@@ -37,11 +37,11 @@ fun SnackBar(
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2
             )
-            Spacer(modifier = Modifier.Companion.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
             buttonText?.let {
                 Text(
                     text = it,
-                    modifier = Modifier.Companion.clickable(
+                    modifier = Modifier.clickable(
                         onClick = {
                             onButtonClicked()
                         },

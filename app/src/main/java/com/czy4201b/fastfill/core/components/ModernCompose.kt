@@ -76,9 +76,9 @@ fun ModernOutlinedButton(
         modifier = modifier,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Companion.Transparent,
+            containerColor = Color.Transparent,
             disabledContainerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.Companion.Transparent,
+            contentColor = Color.Transparent,
             disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
         ),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
@@ -116,7 +116,7 @@ fun ModernSwitch(
     // 颜色
     val trackOff = MaterialTheme.colorScheme.outline
     val trackOn = MaterialTheme.colorScheme.primary
-    val thumbNorm = Color.Companion.White
+    val thumbNorm = Color.White
     val trackDisabled = MaterialTheme.colorScheme.surfaceVariant
     val thumbDisabled = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
 
@@ -134,13 +134,13 @@ fun ModernSwitch(
         animationSpec = tween(150), label = "size"
     )
 
-    val semantics = Modifier.Companion.semantics {
-        role = Role.Companion.Switch
+    val semantics = Modifier.semantics {
+        role = Role.Switch
         stateDescription = if (checked) "开启" else "关闭"
         if (!enabled) disabled()
     }
 
-    val onClickable = Modifier.Companion.pointerInput(checked) {
+    val onClickable = Modifier.pointerInput(checked) {
         if (enabled) {
             detectTapGestures(
                 onPress = {

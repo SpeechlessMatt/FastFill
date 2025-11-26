@@ -25,7 +25,7 @@ fun ErrorPage(message: String) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             Row(
-                modifier = Modifier.Companion.padding(
+                modifier = Modifier.padding(
                     16.dp,
                     top = 38.dp,
                     bottom = 10.dp
@@ -34,7 +34,7 @@ fun ErrorPage(message: String) {
                 Text(
                     text = "FastFill",
                     style = MaterialTheme.typography.titleLarge,
-                    fontFamily = FontFamily.Companion.Serif
+                    fontFamily = FontFamily.Serif
                 )
             }
         }

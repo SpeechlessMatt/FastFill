@@ -21,7 +21,6 @@ fun rememberExactAlarmLauncher(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         Log.d("permission", "get permission result")
-        val notifyGranted = granted
 
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -30,8 +29,8 @@ fun rememberExactAlarmLauncher(
 
         // when好用啊
         when {
-            notifyGranted && exactAlarmGranted -> onAllGranted()
-            !notifyGranted -> onNotifyDenied()
+            granted && exactAlarmGranted -> onAllGranted()
+            !granted -> onNotifyDenied()
             else -> onExactAlarmDenied()
         }
     }

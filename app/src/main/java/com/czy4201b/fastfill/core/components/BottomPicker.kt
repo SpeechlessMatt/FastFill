@@ -117,7 +117,7 @@ fun <T> BottomPicker(
                                 ModernDefaultFilledButton(
                                     modifier = Modifier.widthIn(min = 130.dp),
                                     onClick = {
-                                        scope.resultValues?.let { onResult(it) } ?: onResultNull()
+                                        onResult(scope.resultValues)
                                     }
                                 ) {
                                     Text("确定")
