@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.coil.compose)
     implementation(libs.okhttp)
     implementation(libs.haze)
