@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.coil.compose)
     implementation(libs.okhttp)
     implementation(libs.haze)
     implementation(libs.haze.materials)

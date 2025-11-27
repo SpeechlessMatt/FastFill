@@ -5,6 +5,7 @@ import android.webkit.WebView
 interface FastFillJS {
     val name: String
     val domain: String
+    val iconPath: String
 
     /**
      * 登录使用的网址

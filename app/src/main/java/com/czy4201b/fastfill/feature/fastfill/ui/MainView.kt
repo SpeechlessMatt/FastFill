@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,15 +35,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import com.czy4201b.fastfill.R
 import com.czy4201b.fastfill.core.components.ErrorPage
 import com.czy4201b.fastfill.core.components.ModernFilledButton
 import com.czy4201b.fastfill.core.components.ModernOutlinedButton
 import com.czy4201b.fastfill.core.components.SnackBar
+import com.czy4201b.fastfill.feature.fastfill.javaScripts.impl.DaMaiFill
+import com.czy4201b.fastfill.feature.fastfill.javaScripts.impl.TxDocFill
 import com.czy4201b.fastfill.feature.fastfill.web.HiddenFilledTableWebView
 import com.czy4201b.fastfill.feature.fastfill.web.WebLoginScreen
 import kotlinx.coroutines.launch
@@ -93,7 +92,16 @@ fun MainView(
                 ModalDrawerSheet(
                     modifier = Modifier.background(MaterialTheme.colorScheme.background)
                 ) {
-                    Text("暂无更多设计", Modifier.padding(16.dp))
+                    Button(
+                        onClick = { vm.selectFastFillJS(TxDocFill) }
+                    ) {
+                        Text("腾讯文档")
+                    }
+                    Button(
+                        onClick = { vm.selectFastFillJS(DaMaiFill) }
+                    ) {
+                        Text("大麦网")
+                    }
                 }
             }
         ) {
@@ -145,11 +153,9 @@ fun MainView(
                             .padding(8.dp), // 遵循设计规范 8.dp
                         maxLines = 3
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.txdocs),
-                            contentDescription = null,
+                        LoadIcon(
+                            uiState.currentFastFillJS?.iconPath ?: "null",
                             modifier = Modifier.size(25.dp),
-                            contentScale = ContentScale.Fit
                         )
                     }
 
@@ -261,7 +267,9 @@ fun MainView(
         exit = fadeOut() + scaleOut(targetScale = 0.8f),
     ) {
         UserFillTableExpanded(
-            modifier = Modifier.fillMaxSize().padding(top = 38.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 38.dp),
             vm = userFillTableViewModel
         )
     }

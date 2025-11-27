@@ -25,6 +25,8 @@ object TxDocFill : FastFillJS {
         get() = "TxDocs"
     override val domain: String
         get() = "https://docs.qq.com"
+    override val iconPath: String
+        get() = "fastfill_icons/TxDoc.png"
     override val loginUrl: String
         get() = "https://docs.qq.com/desktop"
 

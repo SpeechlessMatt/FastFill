@@ -16,6 +16,8 @@ object DaMaiFill : FastFillJS {
         get() = "DaMai"
     override val domain: String
         get() = "https://www.damai.cn/"
+    override val iconPath: String
+        get() = "null"
     override val loginUrl: String
         get() = "https://passport.damai.cn/login"
 
