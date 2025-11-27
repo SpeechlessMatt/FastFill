@@ -1,5 +1,6 @@
 package com.czy4201b.fastfill.feature.fastfill.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -50,7 +51,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserFillTableExpanded(
     modifier: Modifier = Modifier,
-    onClose: () -> Unit,
     vm: UserFillTableViewModel
 ) {
     val uiState by vm.state.collectAsState()
@@ -66,6 +66,8 @@ fun UserFillTableExpanded(
         label = "blurRadius"
     )
     val coroutineScope = rememberCoroutineScope()
+
+    BackHandler { vm.zoomTable() }
 
     Surface(
         modifier = modifier,
@@ -145,7 +147,7 @@ fun UserFillTableExpanded(
                                 .clip(RoundedCornerShape(4.dp))
                                 .clickable(
                                     onClick = {
-                                        onClose()
+                                        vm.zoomTable()
                                     },
                                 ),
                             painter = painterResource(R.drawable.expand),

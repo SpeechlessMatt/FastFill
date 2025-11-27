@@ -91,34 +91,16 @@ fun MainView(
         }
     }
 
-    if (isUserFillTableExpanded) {
-        Popup {
-            val visibleState = remember { MutableTransitionState(false) }
+    AnimatedVisibility(
+        visible = isUserFillTableExpanded,
+        enter = fadeIn() + scaleIn(initialScale = 0.8f),
+        exit = fadeOut() + scaleOut(targetScale = 0.8f),
+    ) {
 
-            LaunchedEffect(Unit) {
-                visibleState.targetState = true
-            }
-
-            LaunchedEffect(visibleState.currentState, visibleState.targetState) {
-                if (!visibleState.currentState && !visibleState.targetState) {
-                    userFillTableViewModel.zoomTable()
-                }
-            }
-
-            BackHandler { visibleState.targetState = false }
-
-            AnimatedVisibility(
-                visibleState = visibleState,
-                enter = fadeIn() + scaleIn(initialScale = 0.8f),
-                exit = fadeOut() + scaleOut(targetScale = 0.8f),
-            ) {
-                UserFillTableExpanded(
-                    modifier = Modifier.fillMaxSize(),
-                    onClose = { visibleState.targetState = false },
-                    vm = userFillTableViewModel
-                )
-            }
-        }
+        UserFillTableExpanded(
+            modifier = Modifier.fillMaxSize(),
+            vm = userFillTableViewModel
+        )
     }
 
     if (!uiState.isShowLoginWeb && !uiState.isStartFilling) {
