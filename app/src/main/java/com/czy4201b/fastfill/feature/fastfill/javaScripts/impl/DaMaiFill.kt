@@ -40,14 +40,13 @@ object DaMaiFill : FastFillJS {
         conn.setRequestProperty("Cookie", cookie)
         Log.d("FastFill", "responseCode: ${conn.responseCode}")
         val body = conn.inputStream.bufferedReader().use { it.readText() }
-        val jsonString = body.removePrefix("mtopjsonp1(").removeSuffix(")")
+        val jsonString = body.removePrefix(" mtopjsonp1(").removeSuffix(")")
         // 提取 ret 字段
         val isSuccess = try {
             val ret = JSONObject(jsonString)
                 .getJSONArray("ret")
-                .getString(0) // "SUCCESS::调用成功"
-            Log.d("FastFill", "code=$ret")
-            ret == "SUCCESS::调用成功"
+                .getString(0) // "FAIL_SYS_ILLEGAL_ACCESS::非法请求"
+            ret == "FAIL_SYS_ILLEGAL_ACCESS::非法请求"
         } catch (e: Exception) {
             e.printStackTrace()
             false
