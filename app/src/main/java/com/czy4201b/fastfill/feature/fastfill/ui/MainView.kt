@@ -1,8 +1,6 @@
 package com.czy4201b.fastfill.feature.fastfill.ui
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -31,10 +29,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +39,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import com.czy4201b.fastfill.R
 import com.czy4201b.fastfill.core.components.ErrorPage
 import com.czy4201b.fastfill.core.components.ModernFilledButton
@@ -89,18 +84,6 @@ fun MainView(
         if (uiState.isShowLoginWeb || uiState.isStartFilling) {
             ErrorPage("- fastFillJS数据为null")
         }
-    }
-
-    AnimatedVisibility(
-        visible = isUserFillTableExpanded,
-        enter = fadeIn() + scaleIn(initialScale = 0.8f),
-        exit = fadeOut() + scaleOut(targetScale = 0.8f),
-    ) {
-
-        UserFillTableExpanded(
-            modifier = Modifier.fillMaxSize(),
-            vm = userFillTableViewModel
-        )
     }
 
     if (!uiState.isShowLoginWeb && !uiState.isStartFilling) {
@@ -270,5 +253,16 @@ fun MainView(
                 }
             }
         }
+    }
+
+    AnimatedVisibility(
+        visible = isUserFillTableExpanded,
+        enter = fadeIn() + scaleIn(initialScale = 0.8f),
+        exit = fadeOut() + scaleOut(targetScale = 0.8f),
+    ) {
+        UserFillTableExpanded(
+            modifier = Modifier.fillMaxSize().padding(top = 38.dp),
+            vm = userFillTableViewModel
+        )
     }
 }
