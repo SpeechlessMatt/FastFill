@@ -3,7 +3,7 @@ package com.czy4201b.fastfill.navigation
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,13 +28,13 @@ fun FastFillNavHost(
         composable(Route.Main.route) {
             MainView(
                 modifier = Modifier,
-                userFillTableViewModel = viewModel(),
+                userFillTableViewModel = hiltViewModel(),
                 timeSettingsViewModel = hiltViewModel(),
                 vm = hiltViewModel()
             )
         }
 
-        dialog(Route.UpdateDialog.route) { backStackEntry ->
+        dialog(Route.UpdateDialog.route) { _ ->
             Log.d("Update", "route to dialog now")
             // 使用传递进来的 updateVm，而不是新建
             UpdateDialog(updateVm) {
