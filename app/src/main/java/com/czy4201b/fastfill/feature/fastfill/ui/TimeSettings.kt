@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,6 +45,7 @@ fun TimeSettings(
 ) {
     val context = LocalContext.current
     val applicationContext = context.applicationContext
+    val focusManager = LocalFocusManager.current
 
     val uiState by vm.state.collectAsState()
 
@@ -89,8 +91,10 @@ fun TimeSettings(
                 .fillMaxSize()
                 .clickable(
                     onClick = {
-
-                    }
+                        focusManager.clearFocus()
+                    },
+                    indication = null,
+                    interactionSource = null
                 ),
         ) {
             Text(

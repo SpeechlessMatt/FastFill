@@ -147,6 +147,7 @@ fun UserFillTableExpanded(
                                 .clip(RoundedCornerShape(4.dp))
                                 .clickable(
                                     onClick = {
+                                        focusManager.clearFocus()
                                         vm.zoomTable()
                                     },
                                 ),
