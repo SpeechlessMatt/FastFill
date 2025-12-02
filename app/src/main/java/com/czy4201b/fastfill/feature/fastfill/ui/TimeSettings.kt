@@ -44,7 +44,6 @@ fun TimeSettings(
     vm: TimeSettingsViewModel
 ) {
     val context = LocalContext.current
-    val applicationContext = context.applicationContext
     val focusManager = LocalFocusManager.current
 
     val uiState by vm.state.collectAsState()
