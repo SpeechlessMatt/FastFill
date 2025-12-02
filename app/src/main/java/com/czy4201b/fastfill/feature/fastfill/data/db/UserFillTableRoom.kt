@@ -64,6 +64,9 @@ data class TableRow(
     @ColumnInfo(name = "value")
     val value: String = "",
 
+    @ColumnInfo(name = "type")
+    val type: String = "text",
+
     @ColumnInfo(name = "index")
     val index: Int = 0
 ) {
