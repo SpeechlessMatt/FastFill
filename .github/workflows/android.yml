@@ -60,3 +60,4 @@ jobs:
           token: ${{ github.token }}
           generateReleaseNotes: false
           allowUpdates: true
+          omitBodyDuringUpdate: true
