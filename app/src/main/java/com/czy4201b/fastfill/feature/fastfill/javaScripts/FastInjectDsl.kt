@@ -58,6 +58,17 @@ class FastInjectScope {
     }
 
     /**
+     * 自定义js，自动添加花括号，例如可以使用
+     * @param js 自定义js
+     * @param block 花括号内的js内容
+     */
+    fun execJs(js: String, block: FastInjectScope.() -> Unit) {
+        jsFunc += "$js {\n"
+        this.block()
+        jsFunc += "}"
+    }
+
+    /**
      * 运行在匿名函数中的js，不会污染全局变量，相对更加安全
      * @param js 自定义js
      */

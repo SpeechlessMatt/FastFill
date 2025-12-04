@@ -64,13 +64,13 @@ object TxDocFill : FastFillJS {
                     titles.forEachIndexed { element, idx ->
                         val textValue = element.innerText()
                         val areaEl = areas[idx]
-                        execJs("if (${map.varName}.hasOwnProperty(${textValue.varName}) && ${areaEl.varName}) {")
-                        val fillText = FastInjectScope.ValueRef(
-                            "${map.varName}[${textValue.varName}]",
-                            this@fastInject
-                        )
-                        areaEl.simulateInput(fillText)
-                        execJs("}")
+                        execJs("if (${map.varName}.hasOwnProperty(${textValue.varName}) && ${areaEl.varName})") {
+                            val fillText = FastInjectScope.ValueRef(
+                                "${map.varName}[${textValue.varName}]",
+                                this@fastInject
+                            )
+                            areaEl.simulateInput(fillText)
+                        }
                     }
 
                     waitElement(".question-commit button", 15000).then { button ->
