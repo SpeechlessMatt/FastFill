@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.czy4201b.fastfill.FastFillApplication
-import com.czy4201b.fastfill.core.database.AppDb
 import com.czy4201b.fastfill.feature.fastfill.data.db.TableDao
 import com.czy4201b.fastfill.feature.fastfill.data.db.TableMeta
 import com.czy4201b.fastfill.feature.fastfill.data.db.TableRow
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,8 +23,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class UserFillTableViewModel(
-    private val dao: TableDao = AppDb.get(FastFillApplication.instance).tableDao()
+@HiltViewModel
+class UserFillTableViewModel @Inject constructor(
+    private val dao: TableDao
 ) : ViewModel() {
 
     // 添加互斥锁，目的很简单防止不应该的并发造成数据库错乱

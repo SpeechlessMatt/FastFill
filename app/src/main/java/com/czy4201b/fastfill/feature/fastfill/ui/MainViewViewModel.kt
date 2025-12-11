@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.update
 class MainViewViewModel @Inject constructor(
     private val stateContainer: FastFillStateContainer
 ) : ViewModel() {
-
     // 在同一个文件中定义相关的数据类
     private data class MainViewLocalState(
         val url: String = "",

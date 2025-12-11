@@ -2,6 +2,8 @@ package com.czy4201b.fastfill.core.database
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.czy4201b.fastfill.feature.fastfill.data.db.TableDao
 import dagger.Module
 import dagger.Provides
@@ -16,18 +18,29 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDb {
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ): AppDb {
         return Room.databaseBuilder(
             context,
             AppDb::class.java,
             "app.db"
         )
-            .fallbackToDestructiveMigration(true)
+            .addMigrations(
+                MIGRATION_1_2
+            )
             .build()
     }
 
     @Provides
-    fun provideTableDao(db: AppDb): TableDao {
-        return db.tableDao()
+    @Singleton
+    fun provideTableDao(db: AppDb): TableDao = db.tableDao()
+}
+
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "ALTER TABLE table_row ADD COLUMN type TEXT NOT NULL DEFAULT 'text'"
+        )
     }
 }

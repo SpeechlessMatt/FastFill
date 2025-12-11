@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
-import com.czy4201b.fastfill.feature.fastfill.data.repository.LoginRepository
+import com.czy4201b.fastfill.feature.fastfill.data.state.FastFillStateContainer
 import com.czy4201b.fastfill.feature.fastfill.notification.AlarmReceiver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -16,9 +16,9 @@ import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class TimeSettingsViewModel @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val stateContainer: FastFillStateContainer
 ) : ViewModel() {
-    val loginState = loginRepository.loginState
+    private val _loginState = stateContainer.configState.value.isCurrentLogin
 
     private val _state = MutableStateFlow(TimeSettingsUiState())
     val state: StateFlow<TimeSettingsUiState> = _state.asStateFlow()
@@ -126,9 +126,5 @@ class TimeSettingsViewModel @Inject constructor(
         )
         val trigger = System.currentTimeMillis() + 5000
         am.setExact(AlarmManager.RTC_WAKEUP, trigger, pending)
-    }
-
-    fun bindMainViewModel(){
-
     }
 }
